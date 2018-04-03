@@ -8,15 +8,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 public class Category {
+
 	@Id
 	@GeneratedValue
 	private Long id;
+
 	@Column(nullable = false, unique = true)
 	private String name;
 
 	@OneToMany(mappedBy = "category")
+	@JsonBackReference
 	private List<Book> books;
 
 	public Category() {
