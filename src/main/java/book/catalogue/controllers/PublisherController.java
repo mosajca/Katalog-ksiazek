@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import book.catalogue.database.Book;
 import book.catalogue.database.Publisher;
 import book.catalogue.services.PublisherService;
 
@@ -28,6 +29,11 @@ public class PublisherController {
 	@GetMapping("/publishers/{id}")
 	public Publisher getPublisher(@PathVariable Long id) {
 		return publisherService.getPublisher(id);
+	}
+
+	@GetMapping("/publishers/{id}/books")
+	public List<Book> getAllBooks(@PathVariable Long id) {
+		return publisherService.getPublisher(id).getBooks();
 	}
 
 	@PostMapping("/publishers")

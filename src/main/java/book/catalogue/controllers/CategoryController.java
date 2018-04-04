@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.services.CategoryService;
 
@@ -28,6 +29,11 @@ public class CategoryController {
 	@GetMapping("/categories/{id}")
 	public Category getCategory(@PathVariable Long id) {
 		return categoryService.getCategory(id);
+	}
+
+	@GetMapping("/categories/{id}/books")
+	public List<Book> getAllBooks(@PathVariable Long id) {
+		return categoryService.getCategory(id).getBooks();
 	}
 
 	@PostMapping("/categories")

@@ -1,5 +1,6 @@
 package book.catalogue.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import book.catalogue.database.Author;
+import book.catalogue.database.AuthorBook;
+import book.catalogue.database.Book;
 import book.catalogue.services.AuthorService;
 
 @RestController
@@ -28,6 +31,16 @@ public class AuthorController {
 	@GetMapping("/authors/{id}")
 	public Author getAuthor(@PathVariable Long id) {
 		return authorService.getAuthor(id);
+	}
+
+	@GetMapping("/authors/{id}/books")
+	public List<Book> getAllBooks(@PathVariable Long id) {
+		List<Book> books = new ArrayList<>();
+		Author author = authorService.getAuthor(id);
+		for (AuthorBook authorBook : author.getAuthorBooks()) {
+			books.add(authorBook.getBook());
+		}
+		return books;
 	}
 
 	@PostMapping("/authors")
