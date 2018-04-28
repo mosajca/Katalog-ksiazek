@@ -10,8 +10,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-
 @Entity
 public class Book {
 
@@ -28,16 +26,13 @@ public class Book {
 
 	@ManyToOne
 	@JoinColumn(name = "categoryId")
-	@JsonManagedReference
 	private Category category;
 
 	@ManyToOne
 	@JoinColumn(name = "publisherId")
-	@JsonManagedReference
 	private Publisher publisher;
 
 	@OneToMany(mappedBy = "book")
-	@JsonManagedReference
 	private List<AuthorBook> bookAuthors;
 
 	public Book() {

@@ -6,9 +6,7 @@ import javax.persistence.IdClass;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @IdClass(AuthorBookPK.class)
 @Entity
@@ -24,12 +22,11 @@ public class AuthorBook {
 
 	@ManyToOne
 	@JoinColumn(name = "authorId", updatable = false, insertable = false)
-	@JsonManagedReference
 	private Author author;
 
 	@ManyToOne
 	@JoinColumn(name = "bookId", updatable = false, insertable = false)
-	@JsonBackReference
+	@JsonIgnore
 	private Book book;
 
 	public AuthorBook() {

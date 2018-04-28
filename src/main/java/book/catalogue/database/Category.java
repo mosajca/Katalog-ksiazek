@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 public class Category {
@@ -21,7 +21,7 @@ public class Category {
 	private String name;
 
 	@OneToMany(mappedBy = "category")
-	@JsonBackReference
+	@JsonIgnore
 	private List<Book> books;
 
 	public Category() {
