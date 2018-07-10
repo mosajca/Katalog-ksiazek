@@ -2,6 +2,7 @@ package book.catalogue.database;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -32,7 +33,7 @@ public class Book {
 	@JoinColumn(name = "publisherId")
 	private Publisher publisher;
 
-	@OneToMany(mappedBy = "book")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)
 	private List<AuthorBook> bookAuthors;
 
 	public Book() {

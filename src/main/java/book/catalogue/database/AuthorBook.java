@@ -1,5 +1,7 @@
 package book.catalogue.database;
 
+import java.util.Objects;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.IdClass;
@@ -13,7 +15,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 public class AuthorBook {
 
 	@Id
-	@JsonIgnore
 	private Long authorId;
 
 	@Id
@@ -62,6 +63,19 @@ public class AuthorBook {
 
 	public void setBook(Book book) {
 		this.book = book;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		AuthorBook that = (AuthorBook) o;
+		return Objects.equals(authorId, that.authorId) && Objects.equals(bookId, that.bookId);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(authorId, bookId);
 	}
 
 }
