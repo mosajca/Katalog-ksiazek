@@ -15,20 +15,20 @@ import book.catalogue.repositories.BookRepository;
 @Service
 public class BookService {
 
-	@Autowired
-	private BookRepository bookRepository;
+    @Autowired
+    private BookRepository bookRepository;
 
-	public List<Book> getAllBooks() {
-		List<Book> books = new ArrayList<>();
-		bookRepository.findAll().forEach(books::add);
-		return books;
-	}
+    public List<Book> getAllBooks() {
+        List<Book> books = new ArrayList<>();
+        bookRepository.findAll().forEach(books::add);
+        return books;
+    }
 
-	public Book getBook(Long id) {
-		return bookRepository.findOne(id);
-	}
+    public Book getBook(Long id) {
+        return bookRepository.findOne(id);
+    }
 
-	public void addBook(Book book) {
+    public void addBook(Book book) {
         List<AuthorBook> bookAuthors = book.getBookAuthors();
         if (bookAuthors != null && !bookAuthors.isEmpty()) {
             book.setBookAuthors(null);
@@ -38,22 +38,22 @@ public class BookService {
         } else {
             bookRepository.save(book);
         }
-	}
+    }
 
-	public void updateBook(Book book, Long id) {
-		book.setId(id);
-		if (book.getBookAuthors() == null) {
-			book.setBookAuthors(Collections.emptyList());
-		}
-		for (AuthorBook authorBook : book.getBookAuthors()) {
-			authorBook.setBookId(id);
-		}
-		book.setBookAuthors(book.getBookAuthors().stream().distinct().collect(Collectors.toList()));
-		bookRepository.save(book);
-	}
+    public void updateBook(Book book, Long id) {
+        book.setId(id);
+        if (book.getBookAuthors() == null) {
+            book.setBookAuthors(Collections.emptyList());
+        }
+        for (AuthorBook authorBook : book.getBookAuthors()) {
+            authorBook.setBookId(id);
+        }
+        book.setBookAuthors(book.getBookAuthors().stream().distinct().collect(Collectors.toList()));
+        bookRepository.save(book);
+    }
 
-	public void deleteBook(Long id) {
-		bookRepository.delete(id);
-	}
+    public void deleteBook(Long id) {
+        bookRepository.delete(id);
+    }
 
 }

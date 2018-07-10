@@ -14,85 +14,85 @@ import javax.persistence.OneToMany;
 @Entity
 public class Book {
 
-	@Id
-	@GeneratedValue
-	private Long id;
+    @Id
+    @GeneratedValue
+    private Long id;
 
-	@Column(nullable = false)
-	private String title;
+    @Column(nullable = false)
+    private String title;
 
-	private Short year;
+    private Short year;
 
-	private String description;
+    private String description;
 
-	@ManyToOne
-	@JoinColumn(name = "categoryId")
-	private Category category;
+    @ManyToOne
+    @JoinColumn(name = "categoryId")
+    private Category category;
 
-	@ManyToOne
-	@JoinColumn(name = "publisherId")
-	private Publisher publisher;
+    @ManyToOne
+    @JoinColumn(name = "publisherId")
+    private Publisher publisher;
 
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)
-	private List<AuthorBook> bookAuthors;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)
+    private List<AuthorBook> bookAuthors;
 
-	public Book() {
-	}
+    public Book() {
+    }
 
-	public Long getId() {
-		return id;
-	}
+    public Long getId() {
+        return id;
+    }
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-	public String getTitle() {
-		return title;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Short getYear() {
-		return year;
-	}
+    public Short getYear() {
+        return year;
+    }
 
-	public void setYear(Short year) {
-		this.year = year;
-	}
+    public void setYear(Short year) {
+        this.year = year;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Category getCategory() {
-		return category;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public void setCategory(Category category) {
-		this.category = category;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
-	public Publisher getPublisher() {
-		return publisher;
-	}
+    public Publisher getPublisher() {
+        return publisher;
+    }
 
-	public void setPublisher(Publisher publisher) {
-		this.publisher = publisher;
-	}
+    public void setPublisher(Publisher publisher) {
+        this.publisher = publisher;
+    }
 
-	public List<AuthorBook> getBookAuthors() {
-		return bookAuthors;
-	}
+    public List<AuthorBook> getBookAuthors() {
+        return bookAuthors;
+    }
 
-	public void setBookAuthors(List<AuthorBook> bookAuthors) {
-		this.bookAuthors = bookAuthors;
-	}
+    public void setBookAuthors(List<AuthorBook> bookAuthors) {
+        this.bookAuthors = bookAuthors;
+    }
 
 }

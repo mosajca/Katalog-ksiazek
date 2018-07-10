@@ -18,37 +18,37 @@ import book.catalogue.services.CategoryService;
 @RestController
 public class CategoryController {
 
-	@Autowired
-	private CategoryService categoryService;
+    @Autowired
+    private CategoryService categoryService;
 
-	@GetMapping("/categories")
-	public List<Category> getAllCategories() {
-		return categoryService.getAllCategories();
-	}
+    @GetMapping("/categories")
+    public List<Category> getAllCategories() {
+        return categoryService.getAllCategories();
+    }
 
-	@GetMapping("/categories/{id}")
-	public Category getCategory(@PathVariable Long id) {
-		return categoryService.getCategory(id);
-	}
+    @GetMapping("/categories/{id}")
+    public Category getCategory(@PathVariable Long id) {
+        return categoryService.getCategory(id);
+    }
 
-	@GetMapping("/categories/{id}/books")
-	public List<Book> getAllBooks(@PathVariable Long id) {
-		return categoryService.getCategory(id).getBooks();
-	}
+    @GetMapping("/categories/{id}/books")
+    public List<Book> getAllBooks(@PathVariable Long id) {
+        return categoryService.getCategory(id).getBooks();
+    }
 
-	@PostMapping("/categories")
-	public void addCategory(@RequestBody Category category) {
-		categoryService.addCategory(category);
-	}
+    @PostMapping("/categories")
+    public void addCategory(@RequestBody Category category) {
+        categoryService.addCategory(category);
+    }
 
-	@PutMapping("/categories/{id}")
-	public void updateCategory(@RequestBody Category category) {
-		categoryService.updateCategory(category);
-	}
+    @PutMapping("/categories/{id}")
+    public void updateCategory(@RequestBody Category category) {
+        categoryService.updateCategory(category);
+    }
 
-	@DeleteMapping("/categories/{id}")
-	public void deleteCategory(@PathVariable Long id) {
-		categoryService.deleteCategory(id);
-	}
+    @DeleteMapping("/categories/{id}")
+    public void deleteCategory(@PathVariable Long id) {
+        categoryService.deleteCategory(id);
+    }
 
 }

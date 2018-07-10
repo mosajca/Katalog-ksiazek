@@ -13,29 +13,29 @@ import book.catalogue.repositories.AuthorBookRepository;
 @Service
 public class AuthorBookService {
 
-	@Autowired
-	private AuthorBookRepository authorBookRepository;
+    @Autowired
+    private AuthorBookRepository authorBookRepository;
 
-	public List<AuthorBook> getAllAuthorBooks() {
-		List<AuthorBook> authorBooks = new ArrayList<>();
-		authorBookRepository.findAll().forEach(authorBooks::add);
-		return authorBooks;
-	}
+    public List<AuthorBook> getAllAuthorBooks() {
+        List<AuthorBook> authorBooks = new ArrayList<>();
+        authorBookRepository.findAll().forEach(authorBooks::add);
+        return authorBooks;
+    }
 
-	public AuthorBook getAuthorBook(AuthorBookPK id) {
-		return authorBookRepository.findOne(id);
-	}
+    public AuthorBook getAuthorBook(AuthorBookPK id) {
+        return authorBookRepository.findOne(id);
+    }
 
-	public void addAuthorBook(AuthorBook authorBook) {
-		authorBookRepository.save(authorBook);
-	}
+    public void addAuthorBook(AuthorBook authorBook) {
+        authorBookRepository.save(authorBook);
+    }
 
-	public void updateAuthorBook(AuthorBook authorBook) {
-		authorBookRepository.save(authorBook);
-	}
+    public void updateAuthorBook(AuthorBook authorBook) {
+        authorBookRepository.save(authorBook);
+    }
 
-	public void deleteAuthorBook(AuthorBookPK id) {
-		authorBookRepository.delete(id);
-	}
+    public void deleteAuthorBook(AuthorBookPK id) {
+        authorBookRepository.delete(id);
+    }
 
 }

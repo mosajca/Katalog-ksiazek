@@ -14,68 +14,68 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Entity
 public class AuthorBook {
 
-	@Id
-	private Long authorId;
+    @Id
+    private Long authorId;
 
-	@Id
-	@JsonIgnore
-	private Long bookId;
+    @Id
+    @JsonIgnore
+    private Long bookId;
 
-	@ManyToOne
-	@JoinColumn(name = "authorId", updatable = false, insertable = false)
-	private Author author;
+    @ManyToOne
+    @JoinColumn(name = "authorId", updatable = false, insertable = false)
+    private Author author;
 
-	@ManyToOne
-	@JoinColumn(name = "bookId", updatable = false, insertable = false)
-	@JsonIgnore
-	private Book book;
+    @ManyToOne
+    @JoinColumn(name = "bookId", updatable = false, insertable = false)
+    @JsonIgnore
+    private Book book;
 
-	public AuthorBook() {
-	}
+    public AuthorBook() {
+    }
 
-	public Long getAuthorId() {
-		return authorId;
-	}
+    public Long getAuthorId() {
+        return authorId;
+    }
 
-	public void setAuthorId(Long authorId) {
-		this.authorId = authorId;
-	}
+    public void setAuthorId(Long authorId) {
+        this.authorId = authorId;
+    }
 
-	public Long getBookId() {
-		return bookId;
-	}
+    public Long getBookId() {
+        return bookId;
+    }
 
-	public void setBookId(Long bookId) {
-		this.bookId = bookId;
-	}
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
 
-	public Author getAuthor() {
-		return author;
-	}
+    public Author getAuthor() {
+        return author;
+    }
 
-	public void setAuthor(Author author) {
-		this.author = author;
-	}
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
 
-	public Book getBook() {
-		return book;
-	}
+    public Book getBook() {
+        return book;
+    }
 
-	public void setBook(Book book) {
-		this.book = book;
-	}
+    public void setBook(Book book) {
+        this.book = book;
+    }
 
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
-		AuthorBook that = (AuthorBook) o;
-		return Objects.equals(authorId, that.authorId) && Objects.equals(bookId, that.bookId);
-	}
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorBook that = (AuthorBook) o;
+        return Objects.equals(authorId, that.authorId) && Objects.equals(bookId, that.bookId);
+    }
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(authorId, bookId);
-	}
+    @Override
+    public int hashCode() {
+        return Objects.hash(authorId, bookId);
+    }
 
 }

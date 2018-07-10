@@ -17,32 +17,32 @@ import book.catalogue.services.BookService;
 @RestController
 public class BookController {
 
-	@Autowired
-	private BookService bookService;
+    @Autowired
+    private BookService bookService;
 
-	@GetMapping("/books")
-	public List<Book> getAllBooks() {
-		return bookService.getAllBooks();
-	}
+    @GetMapping("/books")
+    public List<Book> getAllBooks() {
+        return bookService.getAllBooks();
+    }
 
-	@GetMapping("/books/{id}")
-	public Book getBook(@PathVariable Long id) {
-		return bookService.getBook(id);
-	}
+    @GetMapping("/books/{id}")
+    public Book getBook(@PathVariable Long id) {
+        return bookService.getBook(id);
+    }
 
-	@PostMapping("/books")
-	public void addBook(@RequestBody Book book) {
-		bookService.addBook(book);
-	}
+    @PostMapping("/books")
+    public void addBook(@RequestBody Book book) {
+        bookService.addBook(book);
+    }
 
-	@PutMapping("/books/{id}")
-	public void updateBook(@RequestBody Book book, @PathVariable Long id) {
-		bookService.updateBook(book, id);
-	}
+    @PutMapping("/books/{id}")
+    public void updateBook(@RequestBody Book book, @PathVariable Long id) {
+        bookService.updateBook(book, id);
+    }
 
-	@DeleteMapping("/books/{id}")
-	public void deleteBook(@PathVariable Long id) {
-		bookService.deleteBook(id);
-	}
+    @DeleteMapping("/books/{id}")
+    public void deleteBook(@PathVariable Long id) {
+        bookService.deleteBook(id);
+    }
 
 }

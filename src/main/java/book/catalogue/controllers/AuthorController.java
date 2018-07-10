@@ -20,42 +20,42 @@ import book.catalogue.services.AuthorService;
 @RestController
 public class AuthorController {
 
-	@Autowired
-	private AuthorService authorService;
+    @Autowired
+    private AuthorService authorService;
 
-	@GetMapping("/authors")
-	public List<Author> getAllAuthors() {
-		return authorService.getAllAuthors();
-	}
+    @GetMapping("/authors")
+    public List<Author> getAllAuthors() {
+        return authorService.getAllAuthors();
+    }
 
-	@GetMapping("/authors/{id}")
-	public Author getAuthor(@PathVariable Long id) {
-		return authorService.getAuthor(id);
-	}
+    @GetMapping("/authors/{id}")
+    public Author getAuthor(@PathVariable Long id) {
+        return authorService.getAuthor(id);
+    }
 
-	@GetMapping("/authors/{id}/books")
-	public List<Book> getAllBooks(@PathVariable Long id) {
-		List<Book> books = new ArrayList<>();
-		Author author = authorService.getAuthor(id);
-		for (AuthorBook authorBook : author.getAuthorBooks()) {
-			books.add(authorBook.getBook());
-		}
-		return books;
-	}
+    @GetMapping("/authors/{id}/books")
+    public List<Book> getAllBooks(@PathVariable Long id) {
+        List<Book> books = new ArrayList<>();
+        Author author = authorService.getAuthor(id);
+        for (AuthorBook authorBook : author.getAuthorBooks()) {
+            books.add(authorBook.getBook());
+        }
+        return books;
+    }
 
-	@PostMapping("/authors")
-	public void addAuthor(@RequestBody Author author) {
-		authorService.addAuthor(author);
-	}
+    @PostMapping("/authors")
+    public void addAuthor(@RequestBody Author author) {
+        authorService.addAuthor(author);
+    }
 
-	@PutMapping("/authors/{id}")
-	public void updateAuthor(@RequestBody Author author) {
-		authorService.updateAuthor(author);
-	}
+    @PutMapping("/authors/{id}")
+    public void updateAuthor(@RequestBody Author author) {
+        authorService.updateAuthor(author);
+    }
 
-	@DeleteMapping("/authors/{id}")
-	public void deleteAuthor(@PathVariable Long id) {
-		authorService.deleteAuthor(id);
-	}
+    @DeleteMapping("/authors/{id}")
+    public void deleteAuthor(@PathVariable Long id) {
+        authorService.deleteAuthor(id);
+    }
 
 }

@@ -18,37 +18,37 @@ import book.catalogue.services.PublisherService;
 @RestController
 public class PublisherController {
 
-	@Autowired
-	private PublisherService publisherService;
+    @Autowired
+    private PublisherService publisherService;
 
-	@GetMapping("/publishers")
-	public List<Publisher> getAllPublishers() {
-		return publisherService.getAllPublishers();
-	}
+    @GetMapping("/publishers")
+    public List<Publisher> getAllPublishers() {
+        return publisherService.getAllPublishers();
+    }
 
-	@GetMapping("/publishers/{id}")
-	public Publisher getPublisher(@PathVariable Long id) {
-		return publisherService.getPublisher(id);
-	}
+    @GetMapping("/publishers/{id}")
+    public Publisher getPublisher(@PathVariable Long id) {
+        return publisherService.getPublisher(id);
+    }
 
-	@GetMapping("/publishers/{id}/books")
-	public List<Book> getAllBooks(@PathVariable Long id) {
-		return publisherService.getPublisher(id).getBooks();
-	}
+    @GetMapping("/publishers/{id}/books")
+    public List<Book> getAllBooks(@PathVariable Long id) {
+        return publisherService.getPublisher(id).getBooks();
+    }
 
-	@PostMapping("/publishers")
-	public void addPublisher(@RequestBody Publisher publisher) {
-		publisherService.addPublisher(publisher);
-	}
+    @PostMapping("/publishers")
+    public void addPublisher(@RequestBody Publisher publisher) {
+        publisherService.addPublisher(publisher);
+    }
 
-	@PutMapping("/publishers/{id}")
-	public void updatePublisher(@RequestBody Publisher publisher) {
-		publisherService.updatePublisher(publisher);
-	}
+    @PutMapping("/publishers/{id}")
+    public void updatePublisher(@RequestBody Publisher publisher) {
+        publisherService.updatePublisher(publisher);
+    }
 
-	@DeleteMapping("/publishers/{id}")
-	public void deletePublisher(@PathVariable Long id) {
-		publisherService.deletePublisher(id);
-	}
+    @DeleteMapping("/publishers/{id}")
+    public void deletePublisher(@PathVariable Long id) {
+        publisherService.deletePublisher(id);
+    }
 
 }
