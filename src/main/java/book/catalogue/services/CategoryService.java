@@ -29,7 +29,8 @@ public class CategoryService {
         categoryRepository.save(category);
     }
 
-    public void updateCategory(Category category) {
+    public void updateCategory(Category category, Long id) {
+        category.setId(id);
         categoryRepository.save(category);
     }
 

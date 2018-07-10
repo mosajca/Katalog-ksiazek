@@ -29,7 +29,8 @@ public class PublisherService {
         publisherRepository.save(publisher);
     }
 
-    public void updatePublisher(Publisher publisher) {
+    public void updatePublisher(Publisher publisher, Long id) {
+        publisher.setId(id);
         publisherRepository.save(publisher);
     }
 

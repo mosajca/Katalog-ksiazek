@@ -42,8 +42,8 @@ public class PublisherController {
     }
 
     @PutMapping("/publishers/{id}")
-    public void updatePublisher(@RequestBody Publisher publisher) {
-        publisherService.updatePublisher(publisher);
+    public void updatePublisher(@RequestBody Publisher publisher, @PathVariable Long id) {
+        publisherService.updatePublisher(publisher, id);
     }
 
     @DeleteMapping("/publishers/{id}")
