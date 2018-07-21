@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -16,6 +17,7 @@ import book.catalogue.database.Author;
 import book.catalogue.database.AuthorBook;
 import book.catalogue.database.Book;
 import book.catalogue.services.AuthorService;
+import book.catalogue.utils.PDF;
 
 @RestController
 public class AuthorController {
@@ -26,6 +28,11 @@ public class AuthorController {
     @GetMapping("/authors")
     public List<Author> getAllAuthors() {
         return authorService.getAllAuthors();
+    }
+
+    @GetMapping(value = "/authors/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] getAllAuthorsPDF() {
+        return new PDF("Autorzy", authorService.getAllAuthors()).generate();
     }
 
     @GetMapping("/authors/{id}")

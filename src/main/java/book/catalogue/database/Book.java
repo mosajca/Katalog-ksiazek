@@ -1,6 +1,10 @@
 package book.catalogue.database;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -94,6 +98,30 @@ public class Book {
 
     public void setBookAuthors(List<AuthorBook> bookAuthors) {
         this.bookAuthors = bookAuthors;
+    }
+
+    @Override
+    public String toString() {
+        return (id + ". " + format("tytuł", title)
+                + Optional.of(authorsToString()).filter(a -> !a.isEmpty()).map(a -> format("autor", a)).orElse("")
+                + Optional.ofNullable(publisher).map(p -> format("wydawnictwo", p.getName())).orElse("")
+                + Optional.ofNullable(year).map(y -> format("rok", y.toString())).orElse("")
+                + Optional.ofNullable(category).map(c -> format("kategoria", c.getName())).orElse("")
+                + Optional.ofNullable(description).map(d -> format("opis", d)).orElse(""))
+                .replaceFirst("..$", "");
+    }
+
+    private String authorsToString() {
+        return Optional.ofNullable(bookAuthors).map(Collection::stream).orElseGet(Stream::empty)
+                .map(a -> getAuthorFirstAndLastName(a.getAuthor())).collect(Collectors.joining(", "));
+    }
+
+    private String getAuthorFirstAndLastName(Author author) {
+        return Optional.ofNullable(author.getFirstName()).map(f -> f + ' ').orElse("") + author.getLastName();
+    }
+
+    private String format(String first, String second) {
+        return first.toUpperCase() + ": " + second + ", ";
     }
 
 }

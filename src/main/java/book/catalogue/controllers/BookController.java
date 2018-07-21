@@ -3,6 +3,7 @@ package book.catalogue.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import book.catalogue.database.Book;
 import book.catalogue.services.BookService;
+import book.catalogue.utils.PDF;
 
 @RestController
 public class BookController {
@@ -23,6 +25,11 @@ public class BookController {
     @GetMapping("/books")
     public List<Book> getAllBooks() {
         return bookService.getAllBooks();
+    }
+
+    @GetMapping(value = "/books/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] getAllBooksPDF() {
+        return new PDF("Książki", bookService.getAllBooks()).generate();
     }
 
     @GetMapping("/books/{id}")

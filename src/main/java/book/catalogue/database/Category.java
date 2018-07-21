@@ -52,4 +52,9 @@ public class Category {
         this.books = books;
     }
 
+    @Override
+    public String toString() {
+        return id + ". " + name;
+    }
+
 }

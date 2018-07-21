@@ -62,4 +62,9 @@ public class Author {
         this.authorBooks = authorBooks;
     }
 
+    @Override
+    public String toString() {
+        return id + ". " + (firstName == null ? "" : firstName + ' ') + lastName;
+    }
+
 }

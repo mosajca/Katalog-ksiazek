@@ -3,6 +3,7 @@ package book.catalogue.controllers;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.services.CategoryService;
+import book.catalogue.utils.PDF;
 
 @RestController
 public class CategoryController {
@@ -24,6 +26,11 @@ public class CategoryController {
     @GetMapping("/categories")
     public List<Category> getAllCategories() {
         return categoryService.getAllCategories();
+    }
+
+    @GetMapping(value = "/categories/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public byte[] getAllCategoriesPDF() {
+        return new PDF("Kategorie", categoryService.getAllCategories()).generate();
     }
 
     @GetMapping("/categories/{id}")
