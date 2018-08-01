@@ -52,9 +52,19 @@ function generateGetValuesFunction(keys) {
     }
 }
 
+function showLink(href, innerText) {
+    const div = document.getElementById('pdf-link');
+    removeAllChildNodes(div);
+    const a = document.createElement('a');
+    a.href = href;
+    a.innerText = innerText;
+    div.appendChild(a);
+}
+
 function setOnClickGET(buttonId, getUrl, headerValues, getValues) {
     $(buttonId).on('click', function () {
         clearTable();
+        showLink(getUrl + '/pdf', this.innerText);
         $.ajax({url: getUrl, dataType: 'json', type: 'get'}).done(function (array) {
             addHeaderRow(headerValues);
             for (const object of array) {
