@@ -1,11 +1,18 @@
 (function () {
-    const thead = document.getElementById('table-thead');
-    const tbody = document.getElementById('table-tbody');
-    const div = document.getElementById('pdf-link-div');
+    const tableThead = document.getElementById('table-thead');
+    const tableTbody = document.getElementById('table-tbody');
+    const pdfLinkDiv = document.getElementById('pdf-link-div');
+    const buttonDiv = document.getElementById('button-div');
 
     function removeAllChildNodes(element) {
         while (element.hasChildNodes()) {
             element.removeChild(element.lastChild);
+        }
+    }
+
+    function clear(elements) {
+        for (const element of elements) {
+            removeAllChildNodes(element);
         }
     }
 
@@ -20,11 +27,42 @@
     }
 
     function addHeaderRow(values) {
-        addRow(thead, 'th', values);
+        addRow(tableThead, 'th', values);
     }
 
     function addBodyRow(values) {
-        addRow(tbody, 'td', values);
+        addRow(tableTbody, 'td', values);
+    }
+
+    function addButtonBooks(url) {
+        const button = document.createElement('button');
+        buttonDiv.appendChild(button);
+        button.innerText = 'Książki';
+        button.addEventListener('click', function () {
+            clear([tableThead, tableTbody, pdfLinkDiv, buttonDiv]);
+            showLink('/books/pdf', 'Książki');
+            $.ajax({url: url + '/books', dataType: 'json', type: 'get'}).done(function (array) {
+                addHeaderRow(['id', 'tytuł', 'autor', 'rok', 'wydawnictwo', 'kategoria', 'opis']);
+                for (const object of array) {
+                    addBodyRow(getBookValues(object));
+                }
+            })
+        });
+    }
+
+    function addBodyRowButton(url, getValues) {
+        const td = document.createElement('td');
+        const button = document.createElement('button');
+        td.appendChild(button);
+        tableTbody.lastChild.appendChild(td);
+        button.innerText = '->';
+        button.addEventListener('click', function () {
+            removeAllChildNodes(tableTbody);
+            if (!url.startsWith('/books')) addButtonBooks(url);
+            $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (object) {
+                addBodyRow(getValues(object));
+            })
+        });
     }
 
     function generateGetValuesFunction(keys) {
@@ -56,19 +94,18 @@
         const a = document.createElement('a');
         a.href = href;
         a.innerText = innerText;
-        div.appendChild(a);
+        pdfLinkDiv.appendChild(a);
     }
 
-    function setOnClickGET(buttonId, getUrl, headerValues, getValues) {
+    function setOnClickGET(buttonId, url, headerValues, getValues) {
         $(buttonId).on('click', function () {
-            removeAllChildNodes(thead);
-            removeAllChildNodes(tbody);
-            removeAllChildNodes(div);
-            showLink(getUrl + '/pdf', this.innerText);
-            $.ajax({url: getUrl, dataType: 'json', type: 'get'}).done(function (array) {
+            clear([tableThead, tableTbody, pdfLinkDiv, buttonDiv]);
+            showLink(url + '/pdf', this.innerText);
+            $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (array) {
                 addHeaderRow(headerValues);
                 for (const object of array) {
                     addBodyRow(getValues(object));
+                    addBodyRowButton(url + '/' + object.id, getValues);
                 }
             })
         });
