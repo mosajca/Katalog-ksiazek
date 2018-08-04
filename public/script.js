@@ -50,6 +50,22 @@
         });
     }
 
+    function addButtonDelete(url) {
+        const button = document.createElement('button');
+        buttonDiv.appendChild(button);
+        button.innerText = 'Usuń';
+        button.addEventListener('click', function () {
+            $.ajax({url: url, type: 'delete'})
+                .done(function () {
+                    alert('Element został usunięty.');
+                    clear([tableThead, tableTbody, pdfLinkDiv, buttonDiv]);
+                })
+                .fail(function () {
+                    alert('Wystąpił błąd.');
+                })
+        });
+    }
+
     function addBodyRowButton(url, getValues) {
         const td = document.createElement('td');
         const button = document.createElement('button');
@@ -59,6 +75,7 @@
         button.addEventListener('click', function () {
             removeAllChildNodes(tableTbody);
             if (!url.startsWith('/books')) addButtonBooks(url);
+            addButtonDelete(url);
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (object) {
                 addBodyRow(getValues(object));
             })
