@@ -1,14 +1,22 @@
 (function () {
+    const emailInput = document.getElementById('e-mail');
     const pdfLinkDiv = document.getElementById('pdf-link-div');
     const tableThead = document.getElementById('table-thead');
     const tableTbody = document.getElementById('table-tbody');
     const buttonDiv = document.getElementById('button-div');
     const mainForm = document.getElementById('main-form');
 
-    setOnClickGET('#authors-button', '/authors', ['id', 'imię', 'nazwisko'], generateGetValuesFunction('id', 'firstName', 'lastName'));
-    setOnClickGET('#books-button', '/books', ['id', 'tytuł', 'autor', 'rok', 'wydawnictwo', 'kategoria', 'opis'], getBookValues);
-    setOnClickGET('#categories-button', '/categories', ['id', 'nazwa'], generateGetValuesFunction('id', 'name'));
-    setOnClickGET('#publishers-button', '/publishers', ['id', 'nazwa'], generateGetValuesFunction('id', 'name'));
+    const authorHeaderRowValues = ['id', 'imię', 'nazwisko'];
+    const bookHeaderRowValues = ['id', 'tytuł', 'autor', 'rok', 'wydawnictwo', 'kategoria', 'opis'];
+    const categoryPublisherHeaderRowValues = ['id', 'nazwa'];
+    const getAuthorValues = generateGetValuesFunction('id', 'firstName', 'lastName');
+    const getCategoryPublisherValues = generateGetValuesFunction('id', 'name');
+
+    setOnClickSendPdf();
+    setOnClickGET('#authors-button', '/authors', authorHeaderRowValues, getAuthorValues);
+    setOnClickGET('#books-button', '/books', bookHeaderRowValues, getBookValues);
+    setOnClickGET('#categories-button', '/categories', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
+    setOnClickGET('#publishers-button', '/publishers', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
 
     function setOnClickGET(buttonId, url, headerValues, getValues) {
         $(buttonId).on('click', function () {
@@ -20,7 +28,21 @@
                     addBodyRow(getValues(object));
                     addBodyRowButton(url + '/' + object.id, getValues);
                 }
-            })
+            });
+            addForm(url, 'post', false);
+        });
+    }
+
+    function setOnClickSendPdf() {
+        $('#send-pdf').on('click', function () {
+            $.ajax({
+                url: '/email', type: 'post', contentType: 'application/json',
+                data: JSON.stringify({email: emailInput.value})
+            }).done(function () {
+                alert('OK.');
+            }).fail(function () {
+                alert('Wystąpił błąd.');
+            });
         });
     }
 
@@ -64,7 +86,7 @@
     function addBodyRowButton(url, getValues) {
         const td = document.createElement('td');
         td.appendChild(createButton('->', function () {
-            clear(tableTbody);
+            clear(tableTbody, mainForm);
             if (!url.startsWith('/books')) addButtonBooks(url);
             addButtonModify(url);
             addButtonDelete(url);
@@ -80,7 +102,7 @@
             clear(pdfLinkDiv, tableThead, tableTbody, buttonDiv, mainForm);
             addLink('/books/pdf', 'Książki');
             $.ajax({url: url + '/books', dataType: 'json', type: 'get'}).done(function (array) {
-                addHeaderRow(['id', 'tytuł', 'autor', 'rok', 'wydawnictwo', 'kategoria', 'opis']);
+                addHeaderRow(bookHeaderRowValues);
                 for (const object of array) {
                     addBodyRow(getBookValues(object));
                 }
@@ -104,16 +126,20 @@
     function addButtonModify(url) {
         buttonDiv.appendChild(createButton('Modyfikuj', function () {
             clear(mainForm);
-            let addForm;
-            if (url.includes('books')) {
-                addForm = addFormBook;
-            } else if (url.includes('authors')) {
-                addForm = addFormAuthor;
-            } else {
-                addForm = addFormCategoryPublisher;
-            }
             addForm(url, 'put', true);
         }));
+    }
+
+    function addForm(url, type, fill) {
+        let add;
+        if (url.includes('books')) {
+            add = addFormBook;
+        } else if (url.includes('authors')) {
+            add = addFormAuthor;
+        } else {
+            add = addFormCategoryPublisher;
+        }
+        add(url, type, fill);
     }
 
     function addFormCategoryPublisher(url, type, fill) {
@@ -124,7 +150,7 @@
             input.value = tableTbody.firstChild.lastChild.innerText;
         }
         mainForm.appendChild(createButton('OK', function () {
-            sendData(url, type, JSON.stringify({name: input.value}), generateGetValuesFunction('id', 'name'));
+            sendAndGetData(url, type, JSON.stringify({name: input.value}), getCategoryPublisherValues);
         }));
     }
 
@@ -140,10 +166,10 @@
             lastNameInput.value = tableTbody.firstChild.childNodes[2].innerText;
         }
         mainForm.appendChild(createButton('OK', function () {
-            sendData(url, type, JSON.stringify({
+            sendAndGetData(url, type, JSON.stringify({
                 firstName: firstNameInput.value,
                 lastName: lastNameInput.value
-            }), generateGetValuesFunction('id', 'firstName', 'lastName'));
+            }), getAuthorValues);
         }));
     }
 
@@ -198,7 +224,7 @@
                 }
                 book.bookAuthors = authors;
             }
-            sendData(url, type, JSON.stringify(book), getBookValues);
+            sendAndGetData(url, type, JSON.stringify(book), getBookValues);
         }));
     }
 
@@ -223,6 +249,25 @@
                             .always(func);
                     });
             });
+    }
+
+    function sendAndGetData(url, type, data, getValues) {
+        $.ajax({url: url, type: type, contentType: 'application/json', data: data}).done(function () {
+            alert('OK.');
+            clear(tableTbody);
+            $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (data) {
+                if (data instanceof Array) {
+                    for (const object of data) {
+                        addBodyRow(getValues(object));
+                        addBodyRowButton(url + '/' + object.id, getValues);
+                    }
+                } else {
+                    addBodyRow(getValues(data));
+                }
+            });
+        }).fail(function () {
+            alert('Wystąpił błąd.');
+        });
     }
 
     function addOptionsToSelect(select, objects) {
@@ -254,20 +299,6 @@
                 options[i].selected = true;
             }
         }
-    }
-
-    function sendData(url, type, data, getValuesFunction) {
-        $.ajax({url: url, type: type, contentType: 'application/json', data: data})
-            .done(function () {
-                alert('OK.');
-                clear(tableTbody);
-                $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (object) {
-                    addBodyRow(getValuesFunction(object));
-                });
-            })
-            .fail(function () {
-                alert('Wystąpił błąd.');
-            });
     }
 
     function clear(...elements) {
