@@ -85,6 +85,7 @@
 
     function addBodyRowButton(url, getValues) {
         const td = document.createElement('td');
+        td.className = 'td-with-button';
         td.appendChild(createButton('->', function () {
             clear(tableTbody, mainForm);
             if (!url.startsWith('/books')) addButtonBooks(url);

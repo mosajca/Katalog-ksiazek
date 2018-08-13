@@ -6,22 +6,24 @@
     <link rel="stylesheet" href="main.css">
 </head>
 <body>
-<form>
-    <label for="e-mail">Podaj e-mail:</label>
+<div class="top-button-div">
+    <button id="authors-button">Autorzy</button>
+    <button id="books-button">Książki</button>
+    <button id="categories-button">Kategorie</button>
+    <button id="publishers-button">Wydawnictwa</button>
+</div>
+<form class="email-form">
+    <label for="e-mail">Wyślij pliki PDF na e-mail:</label>
     <input type="email" id="e-mail">
-    <button type="button" id="send-pdf">Wyślij pliki PDF</button>
+    <button type="button" id="send-pdf">Wyślij</button>
 </form>
-<button id="authors-button">Autorzy</button>
-<button id="books-button">Książki</button>
-<button id="categories-button">Kategorie</button>
-<button id="publishers-button">Wydawnictwa</button>
 <div id="pdf-link-div"></div>
 <table>
     <thead id="table-thead"></thead>
     <tbody id="table-tbody"></tbody>
 </table>
-<div id="button-div"></div>
-<form id="main-form"></form>
+<div id="button-div" class="bottom-button-div"></div>
+<form id="main-form" class="element-form"></form>
 <script src="jquery-3.3.1.min.js"></script>
 <script src="script.js"></script>
 </body>

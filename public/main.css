@@ -1,3 +1,71 @@
+a {
+    font-size: 20px;
+}
+
+th {
+    background-color: darkslategrey;
+    color: white;
+}
+
 th, td {
     border: 1px solid black;
+    font-size: 25px;
+}
+
+td button {
+    background-color: white;
+    border: 2px solid black;
+    display: block;
+    margin: auto;
+    white-space: nowrap;
+}
+
+.bottom-button-div {
+    margin-top: 5px;
+}
+
+.bottom-button-div button {
+    margin-right: 5px;
+}
+
+.element-form {
+    margin-top: 5px;
+}
+
+.element-form button {
+    display: block;
+}
+
+.element-form label {
+    display: block;
+}
+
+.element-form * {
+    margin-bottom: 2px;
+}
+
+.email-form {
+    margin-top: 10px;
+}
+
+.td-with-button {
+    border: 0;
+}
+
+.top-button-div button {
+    font-size: 18px;
+    height: 40px;
+    width: 20%;
+}
+
+.email-form, .top-button-div {
+    text-align: center;
+}
+
+.bottom-button-div button, .element-form button, .email-form button, .top-button-div button {
+    background-color: darkslateblue;
+    color: white;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
