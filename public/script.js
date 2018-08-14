@@ -23,6 +23,7 @@
             clear(pdfLinkDiv, tableThead, tableTbody, buttonDiv, mainForm);
             addLink(url + '/pdf', this.innerText);
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (array) {
+                pdfLinkDiv.firstChild.innerText += ' ' + array.length;
                 addHeaderRow(headerValues);
                 for (const object of array) {
                     addBodyRow(getValues(object));

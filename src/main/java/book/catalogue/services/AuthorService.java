@@ -26,16 +26,25 @@ public class AuthorService {
     }
 
     public void addAuthor(Author author) {
+        setNullForFirstNameIfEmpty(author);
         authorRepository.save(author);
     }
 
     public void updateAuthor(Author author, Long id) {
         author.setId(id);
+        setNullForFirstNameIfEmpty(author);
         authorRepository.save(author);
     }
 
     public void deleteAuthor(Long id) {
         authorRepository.delete(id);
+    }
+
+    private void setNullForFirstNameIfEmpty(Author author) {
+        String firstName = author.getFirstName();
+        if (firstName != null && firstName.isEmpty()) {
+            author.setFirstName(null);
+        }
     }
 
 }

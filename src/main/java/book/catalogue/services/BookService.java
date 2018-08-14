@@ -36,6 +36,7 @@ public class BookService {
             book.setBookAuthors(bookAuthors);
             updateBook(book, bookId);
         } else {
+            setNullForDescriptionIfEmpty(book);
             bookRepository.save(book);
         }
     }
@@ -49,11 +50,19 @@ public class BookService {
             authorBook.setBookId(id);
         }
         book.setBookAuthors(book.getBookAuthors().stream().distinct().collect(Collectors.toList()));
+        setNullForDescriptionIfEmpty(book);
         bookRepository.save(book);
     }
 
     public void deleteBook(Long id) {
         bookRepository.delete(id);
+    }
+
+    private void setNullForDescriptionIfEmpty(Book book) {
+        String description = book.getDescription();
+        if (description != null && description.isEmpty()) {
+            book.setDescription(null);
+        }
     }
 
 }
