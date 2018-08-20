@@ -2,6 +2,8 @@ package book.catalogue.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +30,8 @@ public class BookController {
     }
 
     @GetMapping(value = "/books/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getAllBooksPDF() {
+    public byte[] getAllBooksPDF(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "inline; filename=\"books.pdf\"");
         return new PDF("Książki", bookService.getAllBooks()).generate();
     }
 

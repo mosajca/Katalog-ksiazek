@@ -2,6 +2,8 @@ package book.catalogue.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +31,8 @@ public class CategoryController {
     }
 
     @GetMapping(value = "/categories/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getAllCategoriesPDF() {
+    public byte[] getAllCategoriesPDF(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "inline; filename=\"categories.pdf\"");
         return new PDF("Kategorie", categoryService.getAllCategories()).generate();
     }
 

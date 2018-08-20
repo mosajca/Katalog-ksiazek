@@ -3,6 +3,8 @@ package book.catalogue.controllers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -31,7 +33,8 @@ public class AuthorController {
     }
 
     @GetMapping(value = "/authors/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getAllAuthorsPDF() {
+    public byte[] getAllAuthorsPDF(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "inline; filename=\"authors.pdf\"");
         return new PDF("Autorzy", authorService.getAllAuthors()).generate();
     }
 
