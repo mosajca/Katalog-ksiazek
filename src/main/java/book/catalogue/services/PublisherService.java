@@ -21,6 +21,12 @@ public class PublisherService {
         return publishers;
     }
 
+    public List<Object[]> getAllPublishersRecords() {
+        List<Object[]> records = new ArrayList<>();
+        publisherRepository.findAll().forEach(p -> records.add(new Object[]{p.getName()}));
+        return records;
+    }
+
     public Publisher getPublisher(Long id) {
         return publisherRepository.findOne(id);
     }

@@ -1,6 +1,6 @@
 (function () {
     const emailInput = document.getElementById('e-mail');
-    const pdfLinkDiv = document.getElementById('pdf-link-div');
+    const linkDiv = document.getElementById('link-div');
     const tableThead = document.getElementById('table-thead');
     const tableTbody = document.getElementById('table-tbody');
     const buttonDiv = document.getElementById('button-div');
@@ -20,10 +20,12 @@
 
     function setOnClickGET(buttonId, url, headerValues, getValues) {
         $(buttonId).on('click', function () {
-            clear(pdfLinkDiv, tableThead, tableTbody, buttonDiv, mainForm);
-            addLink(url + '/pdf', this.innerText);
+            clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
+            addSpan(this.innerText);
+            addLink(url + '/pdf', 'pdf');
+            addLink(url + '/csv', 'csv');
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (array) {
-                pdfLinkDiv.firstChild.innerText += ' ' + array.length;
+                linkDiv.firstChild.innerText += ' ' + array.length;
                 addHeaderRow(headerValues);
                 for (const object of array) {
                     addBodyRow(getValues(object));
@@ -73,7 +75,11 @@
     }
 
     function addLink(href, innerText) {
-        pdfLinkDiv.appendChild(createLink(href, innerText));
+        linkDiv.appendChild(createLink(href, innerText));
+    }
+
+    function addSpan(innerText) {
+        linkDiv.appendChild(createSpan(innerText));
     }
 
     function addHeaderRow(values) {
@@ -101,7 +107,7 @@
 
     function addButtonBooks(url) {
         buttonDiv.appendChild(createButton('Książki', function () {
-            clear(pdfLinkDiv, tableThead, tableTbody, buttonDiv, mainForm);
+            clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
             addLink('/books/pdf', 'Książki');
             $.ajax({url: url + '/books', dataType: 'json', type: 'get'}).done(function (array) {
                 addHeaderRow(bookHeaderRowValues);
@@ -117,7 +123,7 @@
             $.ajax({url: url, type: 'delete'})
                 .done(function () {
                     alert('Element został usunięty.');
-                    clear(pdfLinkDiv, tableThead, tableTbody, buttonDiv, mainForm);
+                    clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
                 })
                 .fail(function () {
                     alert('Wystąpił błąd.');
@@ -259,6 +265,7 @@
             clear(tableTbody);
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (data) {
                 if (data instanceof Array) {
+                    linkDiv.firstChild.innerText = linkDiv.firstChild.innerText.split(' ')[0] + ' ' + data.length;
                     for (const object of data) {
                         addBodyRow(getValues(object));
                         addBodyRowButton(url + '/' + object.id, getValues);
@@ -357,6 +364,12 @@
         addOptionsToSelect(select, [{innerText: '-----', value: -1}]);
         select.selectedIndex = 0;
         return select;
+    }
+
+    function createSpan(innerText) {
+        const span = document.createElement('span');
+        span.innerText = innerText;
+        return span;
     }
 
 })();

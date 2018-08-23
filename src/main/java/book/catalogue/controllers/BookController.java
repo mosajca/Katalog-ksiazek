@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import book.catalogue.database.Book;
 import book.catalogue.services.BookService;
+import book.catalogue.utils.CSV;
 import book.catalogue.utils.PDF;
 
 @RestController
@@ -33,6 +34,12 @@ public class BookController {
     public byte[] getAllBooksPDF(HttpServletResponse response) {
         response.addHeader("Content-Disposition", "inline; filename=\"books.pdf\"");
         return new PDF("Książki", bookService.getAllBooks()).generate();
+    }
+
+    @GetMapping(value = "/books/csv", produces = "text/csv; charset=utf-8")
+    public byte[] getAllBooksCSV(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "attachment; filename=\"books.csv\"");
+        return CSV.toByteArrayCSV(bookService.getAllBooksRecords());
     }
 
     @GetMapping("/books/{id}")

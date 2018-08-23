@@ -21,6 +21,12 @@ public class CategoryService {
         return categories;
     }
 
+    public List<Object[]> getAllCategoriesRecords() {
+        List<Object[]> records = new ArrayList<>();
+        categoryRepository.findAll().forEach(c -> records.add(new Object[]{c.getName()}));
+        return records;
+    }
+
     public Category getCategory(Long id) {
         return categoryRepository.findOne(id);
     }

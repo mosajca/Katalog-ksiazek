@@ -19,6 +19,7 @@ import book.catalogue.database.Author;
 import book.catalogue.database.AuthorBook;
 import book.catalogue.database.Book;
 import book.catalogue.services.AuthorService;
+import book.catalogue.utils.CSV;
 import book.catalogue.utils.PDF;
 
 @RestController
@@ -36,6 +37,12 @@ public class AuthorController {
     public byte[] getAllAuthorsPDF(HttpServletResponse response) {
         response.addHeader("Content-Disposition", "inline; filename=\"authors.pdf\"");
         return new PDF("Autorzy", authorService.getAllAuthors()).generate();
+    }
+
+    @GetMapping(value = "/authors/csv", produces = "text/csv; charset=utf-8")
+    public byte[] getAllAuthorsCSV(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "attachment; filename=\"authors.csv\"");
+        return CSV.toByteArrayCSV(authorService.getAllAuthorsRecords());
     }
 
     @GetMapping("/authors/{id}")

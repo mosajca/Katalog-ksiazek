@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.services.CategoryService;
+import book.catalogue.utils.CSV;
 import book.catalogue.utils.PDF;
 
 @RestController
@@ -34,6 +35,12 @@ public class CategoryController {
     public byte[] getAllCategoriesPDF(HttpServletResponse response) {
         response.addHeader("Content-Disposition", "inline; filename=\"categories.pdf\"");
         return new PDF("Kategorie", categoryService.getAllCategories()).generate();
+    }
+
+    @GetMapping(value = "/categories/csv", produces = "text/csv; charset=utf-8")
+    public byte[] getAllCategoriesCSV(HttpServletResponse response) {
+        response.addHeader("Content-Disposition", "attachment; filename=\"categories.csv\"");
+        return CSV.toByteArrayCSV(categoryService.getAllCategoriesRecords());
     }
 
     @GetMapping("/categories/{id}")

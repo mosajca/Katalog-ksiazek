@@ -21,6 +21,12 @@ public class AuthorService {
         return authors;
     }
 
+    public List<Object[]> getAllAuthorsRecords() {
+        List<Object[]> records = new ArrayList<>();
+        authorRepository.findAll().forEach(a -> records.add(new Object[]{a.getFirstName(), a.getLastName()}));
+        return records;
+    }
+
     public Author getAuthor(Long id) {
         return authorRepository.findOne(id);
     }
