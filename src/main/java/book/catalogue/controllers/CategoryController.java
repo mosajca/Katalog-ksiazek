@@ -1,5 +1,7 @@
 package book.catalogue.controllers;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,7 +14,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import book.catalogue.database.Book;
 import book.catalogue.database.Category;
@@ -40,7 +44,7 @@ public class CategoryController {
     @GetMapping(value = "/categories/csv", produces = "text/csv; charset=utf-8")
     public byte[] getAllCategoriesCSV(HttpServletResponse response) {
         response.addHeader("Content-Disposition", "attachment; filename=\"categories.csv\"");
-        return CSV.toByteArrayCSV(categoryService.getAllCategoriesRecords());
+        return CSV.toStringCSV(categoryService.getAllCategoriesRecords()).getBytes(StandardCharsets.UTF_8);
     }
 
     @GetMapping("/categories/{id}")
@@ -56,6 +60,11 @@ public class CategoryController {
     @PostMapping("/categories")
     public void addCategory(@RequestBody Category category) {
         categoryService.addCategory(category);
+    }
+
+    @PostMapping("/categories/csv")
+    public void importCSV(@RequestParam MultipartFile file) throws IOException {
+        categoryService.addCategories(CSV.fromStringCSV(new String(file.getBytes(), StandardCharsets.UTF_8)));
     }
 
     @PutMapping("/categories/{id}")

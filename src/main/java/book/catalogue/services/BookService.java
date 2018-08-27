@@ -9,18 +9,28 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import book.catalogue.database.Author;
 import book.catalogue.database.AuthorBook;
 import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.database.Publisher;
+import book.catalogue.repositories.AuthorRepository;
 import book.catalogue.repositories.BookRepository;
+import book.catalogue.repositories.CategoryRepository;
+import book.catalogue.repositories.PublisherRepository;
 import book.catalogue.utils.CSV;
 
 @Service
 public class BookService {
 
     @Autowired
+    private AuthorRepository authorRepository;
+    @Autowired
     private BookRepository bookRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
+    @Autowired
+    private PublisherRepository publisherRepository;
 
     public List<Book> getAllBooks() {
         List<Book> books = new ArrayList<>();
@@ -49,7 +59,6 @@ public class BookService {
             book.setBookAuthors(bookAuthors);
             updateBook(book, bookId);
         } else {
-            setNullForDescriptionIfEmpty(book);
             bookRepository.save(book);
         }
     }
@@ -63,7 +72,6 @@ public class BookService {
             authorBook.setBookId(id);
         }
         book.setBookAuthors(book.getBookAuthors().stream().distinct().collect(Collectors.toList()));
-        setNullForDescriptionIfEmpty(book);
         bookRepository.save(book);
     }
 
@@ -71,18 +79,52 @@ public class BookService {
         bookRepository.delete(id);
     }
 
-    private void setNullForDescriptionIfEmpty(Book book) {
-        String description = book.getDescription();
-        if (description != null && description.isEmpty()) {
-            book.setDescription(null);
-        }
-    }
-
     private String getAuthors(Book book) {
         return Optional.ofNullable(book.getBookAuthors()).filter(l -> !l.isEmpty())
                 .map(l -> l.stream().map(AuthorBook::getAuthor)
                         .map(a -> new Object[]{a.getFirstName(), a.getLastName()}).collect(Collectors.toList())
                 ).map(CSV::toStringCSV).orElse(null);
+    }
+
+    public void addBooks(List<String[]> records) {
+        records.stream().filter(array -> array.length == 6).map(this::arrayToBook).forEach(this::addBook);
+    }
+
+    private Book arrayToBook(String[] array) {
+        Book book = new Book(array[0], parseShort(array[2]), array[5]);
+        if (!array[4].isEmpty()) {
+            book.setCategory(categoryRepository.findFirstByName(array[4])
+                    .orElseGet(() -> categoryRepository.save(new Category(array[4]))));
+        }
+        if (!array[3].isEmpty()) {
+            book.setPublisher(publisherRepository.findFirstByName(array[3])
+                    .orElseGet(() -> publisherRepository.save(new Publisher(array[3]))));
+        }
+        book.setBookAuthors(toAuthorBookList(CSV.fromStringCSV(array[1])));
+        return book;
+    }
+
+    private List<AuthorBook> toAuthorBookList(List<String[]> authors) {
+        List<AuthorBook> list = new ArrayList<>();
+        for (String[] array : authors) {
+            AuthorBook ab = new AuthorBook();
+            ab.setAuthorId(authorRepository.findFirstByFirstNameAndLastName(nullIfEmpty(array[0]), array[1])
+                    .map(Author::getId).orElseGet(() -> authorRepository.save(new Author(array[0], array[1])).getId()));
+            list.add(ab);
+        }
+        return list;
+    }
+
+    private Short parseShort(String string) {
+        try {
+            return Short.parseShort(string);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+    private String nullIfEmpty(String string) {
+        return (string != null && string.isEmpty()) ? null : string;
     }
 
 }

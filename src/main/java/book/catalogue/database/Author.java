@@ -30,6 +30,11 @@ public class Author {
     public Author() {
     }
 
+    public Author(String firstName, String lastName) {
+        this.firstName = changeIfEmpty(firstName, null);
+        this.lastName = changeIfEmpty(lastName, "<puste>");
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,7 +48,7 @@ public class Author {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        this.firstName = changeIfEmpty(firstName, null);
     }
 
     public String getLastName() {
@@ -51,7 +56,7 @@ public class Author {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        this.lastName = changeIfEmpty(lastName, "<puste>");
     }
 
     public List<AuthorBook> getAuthorBooks() {
@@ -65,6 +70,10 @@ public class Author {
     @Override
     public String toString() {
         return id + ". " + (firstName == null ? "" : firstName + ' ') + lastName;
+    }
+
+    private String changeIfEmpty(String name, String string) {
+        return (name != null && name.isEmpty()) ? string : name;
     }
 
 }

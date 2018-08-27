@@ -28,6 +28,10 @@ public class Category {
     public Category() {
     }
 
+    public Category(String name) {
+        this.name = changeNameIfEmpty(name);
+    }
+
     public Long getId() {
         return id;
     }
@@ -41,7 +45,7 @@ public class Category {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = changeNameIfEmpty(name);
     }
 
     public List<Book> getBooks() {
@@ -55,6 +59,10 @@ public class Category {
     @Override
     public String toString() {
         return id + ". " + name;
+    }
+
+    private String changeNameIfEmpty(String name) {
+        return (name != null && name.isEmpty()) ? "<puste>" : name;
     }
 
 }

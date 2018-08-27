@@ -44,6 +44,12 @@ public class Book {
     public Book() {
     }
 
+    public Book(String title, Short year, String description) {
+        this.title = changeIfEmpty(title, "<puste>");
+        this.year = year;
+        this.description = changeIfEmpty(description, null);
+    }
+
     public Long getId() {
         return id;
     }
@@ -57,7 +63,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        this.title = title;
+        this.title = changeIfEmpty(title, "<puste>");
     }
 
     public Short getYear() {
@@ -73,7 +79,7 @@ public class Book {
     }
 
     public void setDescription(String description) {
-        this.description = description;
+        this.description = changeIfEmpty(description, null);
     }
 
     public Category getCategory() {
@@ -122,6 +128,10 @@ public class Book {
 
     private String format(String first, String second) {
         return first.toUpperCase() + ": " + second + ", ";
+    }
+
+    private String changeIfEmpty(String name, String string) {
+        return (name != null && name.isEmpty()) ? string : name;
     }
 
 }

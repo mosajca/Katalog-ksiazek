@@ -1,12 +1,18 @@
 package book.catalogue.services;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import book.catalogue.database.Author;
+import book.catalogue.database.AuthorBook;
+import book.catalogue.database.Book;
 import book.catalogue.repositories.AuthorRepository;
 
 @Service
@@ -31,26 +37,30 @@ public class AuthorService {
         return authorRepository.findOne(id);
     }
 
+    public List<Book> getAllBooksOfAuthor(Long id) {
+        return Optional.ofNullable(authorRepository.findOne(id).getAuthorBooks())
+                .map(Collection::stream).orElseGet(Stream::empty)
+                .map(AuthorBook::getBook).collect(Collectors.toList());
+    }
+
     public void addAuthor(Author author) {
-        setNullForFirstNameIfEmpty(author);
         authorRepository.save(author);
+    }
+
+    public void addAuthors(List<String[]> records) {
+        authorRepository.save(records.stream()
+                .filter(array -> array.length == 2)
+                .map(array -> new Author(array[0], array[1])).collect(Collectors.toList())
+        );
     }
 
     public void updateAuthor(Author author, Long id) {
         author.setId(id);
-        setNullForFirstNameIfEmpty(author);
         authorRepository.save(author);
     }
 
     public void deleteAuthor(Long id) {
         authorRepository.delete(id);
-    }
-
-    private void setNullForFirstNameIfEmpty(Author author) {
-        String firstName = author.getFirstName();
-        if (firstName != null && firstName.isEmpty()) {
-            author.setFirstName(null);
-        }
     }
 
 }

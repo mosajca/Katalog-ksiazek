@@ -2,6 +2,8 @@ package book.catalogue.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +35,14 @@ public class CategoryService {
 
     public void addCategory(Category category) {
         categoryRepository.save(category);
+    }
+
+    public void addCategories(List<String[]> records) {
+        Set<String> names = getAllCategories().stream().map(Category::getName).collect(Collectors.toSet());
+        categoryRepository.save(records.stream()
+                .filter(array -> array.length == 1 && !names.contains(array[0]))
+                .map(array -> new Category(array[0])).collect(Collectors.toList())
+        );
     }
 
     public void updateCategory(Category category, Long id) {
