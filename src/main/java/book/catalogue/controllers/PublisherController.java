@@ -77,4 +77,9 @@ public class PublisherController {
         publisherService.deletePublisher(id);
     }
 
+    @DeleteMapping("/publishers")
+    public void deleteAllWithoutBooks() {
+        publisherService.deleteAllWithoutBooks();
+    }
+
 }

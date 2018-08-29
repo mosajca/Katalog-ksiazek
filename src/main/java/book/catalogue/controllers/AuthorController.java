@@ -77,4 +77,9 @@ public class AuthorController {
         authorService.deleteAuthor(id);
     }
 
+    @DeleteMapping("/authors")
+    public void deleteAllWithoutBooks() {
+        authorService.deleteAllWithoutBooks();
+    }
+
 }

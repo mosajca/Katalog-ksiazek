@@ -54,4 +54,14 @@ public class PublisherService {
         publisherRepository.delete(id);
     }
 
+    public void deleteAllWithoutBooks() {
+        publisherRepository.delete(getAllPublishers().stream()
+                .filter(publisher -> nullOrEmpty(publisher.getBooks()))
+                .collect(Collectors.toList()));
+    }
+
+    private boolean nullOrEmpty(List<?> list) {
+        return list == null || list.isEmpty();
+    }
+
 }

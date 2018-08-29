@@ -38,7 +38,7 @@ public class AuthorService {
     }
 
     public List<Book> getAllBooksOfAuthor(Long id) {
-        return Optional.ofNullable(authorRepository.findOne(id).getAuthorBooks())
+        return Optional.ofNullable(authorRepository.findOne(id)).map(Author::getAuthorBooks)
                 .map(Collection::stream).orElseGet(Stream::empty)
                 .map(AuthorBook::getBook).collect(Collectors.toList());
     }
@@ -61,6 +61,16 @@ public class AuthorService {
 
     public void deleteAuthor(Long id) {
         authorRepository.delete(id);
+    }
+
+    public void deleteAllWithoutBooks() {
+        authorRepository.delete(getAllAuthors().stream()
+                .filter(author -> nullOrEmpty(author.getAuthorBooks()))
+                .collect(Collectors.toList()));
+    }
+
+    private boolean nullOrEmpty(List<?> list) {
+        return list == null || list.isEmpty();
     }
 
 }

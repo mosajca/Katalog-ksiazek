@@ -71,4 +71,9 @@ public class BookController {
         bookService.deleteBook(id);
     }
 
+    @DeleteMapping("/books")
+    public void deleteAll() {
+        bookService.deleteAll();
+    }
+
 }

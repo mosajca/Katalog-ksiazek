@@ -35,6 +35,7 @@
             });
             addButtonAdd(url);
             addButtonImportCSV(url);
+            addButtonDelete(url);
         });
     }
 

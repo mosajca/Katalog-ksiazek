@@ -54,4 +54,14 @@ public class CategoryService {
         categoryRepository.delete(id);
     }
 
+    public void deleteAllWithoutBooks() {
+        categoryRepository.delete(getAllCategories().stream()
+                .filter(category -> nullOrEmpty(category.getBooks()))
+                .collect(Collectors.toList()));
+    }
+
+    private boolean nullOrEmpty(List<?> list) {
+        return list == null || list.isEmpty();
+    }
+
 }

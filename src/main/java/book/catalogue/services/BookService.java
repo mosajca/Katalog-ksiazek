@@ -79,6 +79,10 @@ public class BookService {
         bookRepository.delete(id);
     }
 
+    public void deleteAll() {
+        bookRepository.deleteAll();
+    }
+
     private String getAuthors(Book book) {
         return Optional.ofNullable(book.getBookAuthors()).filter(l -> !l.isEmpty())
                 .map(l -> l.stream().map(AuthorBook::getAuthor)

@@ -77,4 +77,9 @@ public class CategoryController {
         categoryService.deleteCategory(id);
     }
 
+    @DeleteMapping("/categories")
+    public void deleteAllWithoutBooks() {
+        categoryService.deleteAllWithoutBooks();
+    }
+
 }
