@@ -12,6 +12,7 @@
     const getAuthorValues = generateGetValuesFunction('id', 'firstName', 'lastName');
     const getCategoryPublisherValues = generateGetValuesFunction('id', 'name');
 
+    setOnLoadHiddenIframe();
     setOnClickSendPdf();
     setOnClickGET('#authors-button', '/authors', authorHeaderRowValues, getAuthorValues);
     setOnClickGET('#books-button', '/books', bookHeaderRowValues, getBookValues);
@@ -32,7 +33,14 @@
                     addBodyRowButton(url + '/' + object.id, getValues);
                 }
             });
-            addForm(url, 'post', false);
+            addButtonAdd(url);
+            addButtonImportCSV(url);
+        });
+    }
+
+    function setOnLoadHiddenIframe() {
+        $('#hidden-iframe').on('load', function () {
+            window.location.replace('/');
         });
     }
 
@@ -94,7 +102,7 @@
         const td = document.createElement('td');
         td.className = 'td-with-button';
         td.appendChild(createButton('->', function () {
-            clear(tableTbody, mainForm);
+            clear(tableTbody, buttonDiv, mainForm);
             if (!url.startsWith('/books')) addButtonBooks(url);
             addButtonModify(url);
             addButtonDelete(url);
@@ -136,6 +144,28 @@
             clear(mainForm);
             addForm(url, 'put', true);
         }));
+    }
+
+    function addButtonAdd(url) {
+        buttonDiv.appendChild(createButton('Dodaj', function () {
+            clear(mainForm);
+            addForm(url, 'post', false);
+        }));
+    }
+
+    function addButtonImportCSV(url) {
+        buttonDiv.appendChild(createButton('Importuj CSV', function () {
+            clear(mainForm);
+            addFormImportCsv(url);
+        }));
+    }
+
+    function addFormImportCsv(url) {
+        mainForm.appendChild(createLabel('csvFile', 'Plik csv:'));
+        const input = createInput('csvFile', 'file');
+        input.name = 'file';
+        mainForm.appendChild(input);
+        mainForm.appendChild(createButtonSubmit('OK', url + '/csv', 'multipart/form-data', 'POST', 'hidden-iframe'));
     }
 
     function addForm(url, type, fill) {
@@ -323,6 +353,17 @@
         button.type = 'button';
         button.innerText = buttonInnerText;
         button.addEventListener('click', clickFunction);
+        return button;
+    }
+
+    function createButtonSubmit(buttonInnerText, buttonFormAction, buttonFormEnctype, buttonFormMethod, buttonFormTarget) {
+        const button = document.createElement('button');
+        button.type = 'submit';
+        button.innerText = buttonInnerText;
+        button.formAction = buttonFormAction;
+        button.formEnctype = buttonFormEnctype;
+        button.formMethod = buttonFormMethod;
+        button.formTarget = buttonFormTarget;
         return button;
     }
 
