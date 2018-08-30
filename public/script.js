@@ -131,7 +131,6 @@
         buttonDiv.appendChild(createButton('Usuń', function () {
             $.ajax({url: url, type: 'delete'})
                 .done(function () {
-                    alert('Element został usunięty.');
                     clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
                 })
                 .fail(function () {
@@ -292,7 +291,6 @@
 
     function sendAndGetData(url, type, data, getValues) {
         $.ajax({url: url, type: type, contentType: 'application/json', data: data}).done(function () {
-            alert('OK.');
             clear(tableTbody);
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (data) {
                 if (data instanceof Array) {
@@ -349,43 +347,43 @@
         }
     }
 
-    function createButton(buttonInnerText, clickFunction) {
+    function createButton(innerText, clickFunction) {
         const button = document.createElement('button');
         button.type = 'button';
-        button.innerText = buttonInnerText;
+        button.innerText = innerText;
         button.addEventListener('click', clickFunction);
         return button;
     }
 
-    function createButtonSubmit(buttonInnerText, buttonFormAction, buttonFormEnctype, buttonFormMethod, buttonFormTarget) {
+    function createButtonSubmit(innerText, formAction, formEnctype, formMethod, formTarget) {
         const button = document.createElement('button');
         button.type = 'submit';
-        button.innerText = buttonInnerText;
-        button.formAction = buttonFormAction;
-        button.formEnctype = buttonFormEnctype;
-        button.formMethod = buttonFormMethod;
-        button.formTarget = buttonFormTarget;
+        button.innerText = innerText;
+        button.formAction = formAction;
+        button.formEnctype = formEnctype;
+        button.formMethod = formMethod;
+        button.formTarget = formTarget;
         return button;
     }
 
-    function createInput(inputId, inputType) {
+    function createInput(id, type) {
         const input = document.createElement('input');
-        input.id = inputId;
-        input.type = inputType;
+        input.id = id;
+        input.type = type;
         return input;
     }
 
-    function createLabel(labelHtmlFor, labelInnerText) {
+    function createLabel(htmlFor, innerText) {
         const label = document.createElement('label');
-        label.htmlFor = labelHtmlFor;
-        label.innerText = labelInnerText;
+        label.htmlFor = htmlFor;
+        label.innerText = innerText;
         return label;
     }
 
-    function createLink(aHref, aInnerText) {
+    function createLink(href, innerText) {
         const a = document.createElement('a');
-        a.href = aHref;
-        a.innerText = aInnerText;
+        a.href = href;
+        a.innerText = innerText;
         return a;
     }
 
@@ -399,10 +397,10 @@
         return tr;
     }
 
-    function createSelect(selectId, selectMultiple) {
+    function createSelect(id, multiple) {
         const select = document.createElement('select');
-        select.id = selectId;
-        select.multiple = selectMultiple;
+        select.id = id;
+        select.multiple = multiple;
         addOptionsToSelect(select, [{innerText: '-----', value: -1}]);
         select.selectedIndex = 0;
         return select;
