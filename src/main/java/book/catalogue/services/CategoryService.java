@@ -1,6 +1,5 @@
 package book.catalogue.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,52 +11,38 @@ import book.catalogue.database.Category;
 import book.catalogue.repositories.CategoryRepository;
 
 @Service
-public class CategoryService {
+public class CategoryService extends GenericService<Category> {
+
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    private CategoryRepository categoryRepository;
-
-    public List<Category> getAllCategories() {
-        List<Category> categories = new ArrayList<>();
-        categoryRepository.findAll().forEach(categories::add);
-        return categories;
+    public CategoryService(CategoryRepository categoryRepository) {
+        super(categoryRepository);
+        this.categoryRepository = categoryRepository;
     }
 
-    public List<Object[]> getAllCategoriesRecords() {
-        List<Object[]> records = new ArrayList<>();
-        categoryRepository.findAll().forEach(c -> records.add(new Object[]{c.getName()}));
-        return records;
-    }
-
-    public Category getCategory(Long id) {
-        return categoryRepository.findOne(id);
-    }
-
-    public void addCategory(Category category) {
-        categoryRepository.save(category);
-    }
-
-    public void addCategories(List<String[]> records) {
-        Set<String> names = getAllCategories().stream().map(Category::getName).collect(Collectors.toSet());
+    @Override
+    public void addAllRecords(List<String[]> records) {
+        Set<String> names = getAll().stream().map(Category::getName).collect(Collectors.toSet());
         categoryRepository.save(records.stream()
                 .filter(array -> array.length == 1 && !names.contains(array[0]))
                 .map(array -> new Category(array[0])).collect(Collectors.toList())
         );
     }
 
-    public void updateCategory(Category category, Long id) {
+    @Override
+    void setId(Category category, Long id) {
         category.setId(id);
-        categoryRepository.save(category);
     }
 
-    public void deleteCategory(Long id) {
-        categoryRepository.delete(id);
+    @Override
+    Object[] toArray(Category category) {
+        return new Object[]{category.getName()};
     }
 
-    public void deleteAllWithoutBooks() {
-        categoryRepository.delete(getAllCategories().stream()
-                .filter(category -> nullOrEmpty(category.getBooks()))
-                .collect(Collectors.toList()));
+    @Override
+    boolean canBeDeleted(Category category) {
+        return nullOrEmpty(category.getBooks());
     }
 
     private boolean nullOrEmpty(List<?> list) {

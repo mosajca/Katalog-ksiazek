@@ -21,49 +21,38 @@ import book.catalogue.repositories.PublisherRepository;
 import book.catalogue.utils.CSV;
 
 @Service
-public class BookService {
+public class BookService extends GenericService<Book> {
+
+    private final AuthorRepository authorRepository;
+    private final BookRepository bookRepository;
+    private final CategoryRepository categoryRepository;
+    private final PublisherRepository publisherRepository;
 
     @Autowired
-    private AuthorRepository authorRepository;
-    @Autowired
-    private BookRepository bookRepository;
-    @Autowired
-    private CategoryRepository categoryRepository;
-    @Autowired
-    private PublisherRepository publisherRepository;
-
-    public List<Book> getAllBooks() {
-        List<Book> books = new ArrayList<>();
-        bookRepository.findAll().forEach(books::add);
-        return books;
+    public BookService(AuthorRepository authorRepository, BookRepository bookRepository,
+                       CategoryRepository categoryRepository, PublisherRepository publisherRepository) {
+        super(bookRepository);
+        this.authorRepository = authorRepository;
+        this.bookRepository = bookRepository;
+        this.categoryRepository = categoryRepository;
+        this.publisherRepository = publisherRepository;
     }
 
-    public List<Object[]> getAllBooksRecords() {
-        List<Object[]> records = new ArrayList<>();
-        bookRepository.findAll().forEach(b -> records.add(new Object[]{b.getTitle(), getAuthors(b), b.getYear(),
-                Optional.ofNullable(b.getPublisher()).map(Publisher::getName).orElse(null),
-                Optional.ofNullable(b.getCategory()).map(Category::getName).orElse(null), b.getDescription()
-        }));
-        return records;
-    }
-
-    public Book getBook(Long id) {
-        return bookRepository.findOne(id);
-    }
-
-    public void addBook(Book book) {
+    @Override
+    public void add(Book book) {
         List<AuthorBook> bookAuthors = book.getBookAuthors();
         if (bookAuthors != null && !bookAuthors.isEmpty()) {
             book.setBookAuthors(null);
             Long bookId = bookRepository.save(book).getId();
             book.setBookAuthors(bookAuthors);
-            updateBook(book, bookId);
+            update(book, bookId);
         } else {
             bookRepository.save(book);
         }
     }
 
-    public void updateBook(Book book, Long id) {
+    @Override
+    public void update(Book book, Long id) {
         book.setId(id);
         if (book.getBookAuthors() == null) {
             book.setBookAuthors(Collections.emptyList());
@@ -75,23 +64,11 @@ public class BookService {
         bookRepository.save(book);
     }
 
-    public void deleteBook(Long id) {
-        bookRepository.delete(id);
-    }
-
-    public void deleteAll() {
-        bookRepository.deleteAll();
-    }
-
     private String getAuthors(Book book) {
         return Optional.ofNullable(book.getBookAuthors()).filter(l -> !l.isEmpty())
                 .map(l -> l.stream().map(AuthorBook::getAuthor)
                         .map(a -> new Object[]{a.getFirstName(), a.getLastName()}).collect(Collectors.toList())
                 ).map(CSV::toStringCSV).orElse(null);
-    }
-
-    public void addBooks(List<String[]> records) {
-        records.stream().filter(array -> array.length == 6).map(this::arrayToBook).forEach(this::addBook);
     }
 
     private Book arrayToBook(String[] array) {
@@ -125,6 +102,30 @@ public class BookService {
         } catch (NumberFormatException e) {
             return null;
         }
+    }
+
+    @Override
+    public void addAllRecords(List<String[]> records) {
+        records.stream().filter(array -> array.length == 6).map(this::arrayToBook).forEach(this::add);
+    }
+
+    @Override
+    void setId(Book book, Long id) {
+        book.setId(id);
+    }
+
+    @Override
+    Object[] toArray(Book book) {
+        return new Object[]{book.getTitle(), getAuthors(book), book.getYear(),
+                Optional.ofNullable(book.getPublisher()).map(Publisher::getName).orElse(null),
+                Optional.ofNullable(book.getCategory()).map(Category::getName).orElse(null),
+                book.getDescription()
+        };
+    }
+
+    @Override
+    boolean canBeDeleted(Book book) {
+        return true;
     }
 
     private String nullIfEmpty(String string) {

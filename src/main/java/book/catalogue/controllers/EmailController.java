@@ -16,8 +16,12 @@ import book.catalogue.services.EmailService;
 @RestController
 public class EmailController {
 
+    private final EmailService emailService;
+
     @Autowired
-    private EmailService emailService;
+    public EmailController(EmailService emailService) {
+        this.emailService = emailService;
+    }
 
     @PostMapping("/email")
     public ResponseEntity<?> sendEmail(@RequestBody String json) {

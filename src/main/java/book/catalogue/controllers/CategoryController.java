@@ -1,85 +1,33 @@
 package book.catalogue.controllers;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-
-import javax.servlet.http.HttpServletResponse;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.services.CategoryService;
-import book.catalogue.utils.CSV;
-import book.catalogue.utils.PDF;
 
 @RestController
-public class CategoryController {
+@RequestMapping("/categories")
+public class CategoryController extends GenericController<Category> {
+
+    private final CategoryService categoryService;
 
     @Autowired
-    private CategoryService categoryService;
-
-    @GetMapping("/categories")
-    public List<Category> getAllCategories() {
-        return categoryService.getAllCategories();
+    public CategoryController(CategoryService categoryService) {
+        super(categoryService, "categories", "Kategorie");
+        this.categoryService = categoryService;
     }
 
-    @GetMapping(value = "/categories/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
-    public byte[] getAllCategoriesPDF(HttpServletResponse response) {
-        response.addHeader("Content-Disposition", "inline; filename=\"categories.pdf\"");
-        return new PDF("Kategorie", categoryService.getAllCategories()).generate();
-    }
-
-    @GetMapping(value = "/categories/csv", produces = "text/csv; charset=utf-8")
-    public byte[] getAllCategoriesCSV(HttpServletResponse response) {
-        response.addHeader("Content-Disposition", "attachment; filename=\"categories.csv\"");
-        return CSV.toStringCSV(categoryService.getAllCategoriesRecords()).getBytes(StandardCharsets.UTF_8);
-    }
-
-    @GetMapping("/categories/{id}")
-    public Category getCategory(@PathVariable Long id) {
-        return categoryService.getCategory(id);
-    }
-
-    @GetMapping("/categories/{id}/books")
+    @GetMapping("{id}/books")
     public List<Book> getAllBooks(@PathVariable Long id) {
-        return categoryService.getCategory(id).getBooks();
-    }
-
-    @PostMapping("/categories")
-    public void addCategory(@RequestBody Category category) {
-        categoryService.addCategory(category);
-    }
-
-    @PostMapping("/categories/csv")
-    public void importCSV(@RequestParam MultipartFile file) throws IOException {
-        categoryService.addCategories(CSV.fromStringCSV(new String(file.getBytes(), StandardCharsets.UTF_8)));
-    }
-
-    @PutMapping("/categories/{id}")
-    public void updateCategory(@RequestBody Category category, @PathVariable Long id) {
-        categoryService.updateCategory(category, id);
-    }
-
-    @DeleteMapping("/categories/{id}")
-    public void deleteCategory(@PathVariable Long id) {
-        categoryService.deleteCategory(id);
-    }
-
-    @DeleteMapping("/categories")
-    public void deleteAllWithoutBooks() {
-        categoryService.deleteAllWithoutBooks();
+        return Optional.ofNullable(categoryService.get(id)).map(Category::getBooks).orElse(null);
     }
 
 }

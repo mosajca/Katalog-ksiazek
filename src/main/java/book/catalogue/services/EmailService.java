@@ -15,16 +15,21 @@ import book.catalogue.utils.PDF;
 @Service
 public class EmailService {
 
+    private final JavaMailSender javaMailSender;
+    private final AuthorService authorService;
+    private final BookService bookService;
+    private final CategoryService categoryService;
+    private final PublisherService publisherService;
+
     @Autowired
-    private JavaMailSender javaMailSender;
-    @Autowired
-    private AuthorService authorService;
-    @Autowired
-    private BookService bookService;
-    @Autowired
-    private CategoryService categoryService;
-    @Autowired
-    private PublisherService publisherService;
+    public EmailService(JavaMailSender javaMailSender, AuthorService authorService, BookService bookService,
+                        CategoryService categoryService, PublisherService publisherService) {
+        this.javaMailSender = javaMailSender;
+        this.authorService = authorService;
+        this.bookService = bookService;
+        this.categoryService = categoryService;
+        this.publisherService = publisherService;
+    }
 
     public boolean sendPDF(String to) {
         try {
@@ -33,10 +38,10 @@ public class EmailService {
             helper.setTo(to);
             helper.setSubject("Pliki PDF");
             helper.setText("Pliki PDF: autorzy, książki, kategorie, wydawnictwa.");
-            helper.addAttachment("autorzy.pdf", getResourcePDF("Autorzy", authorService.getAllAuthors()));
-            helper.addAttachment("książki.pdf", getResourcePDF("Książki", bookService.getAllBooks()));
-            helper.addAttachment("kategorie.pdf", getResourcePDF("Kategorie", categoryService.getAllCategories()));
-            helper.addAttachment("wydawnictwa.pdf", getResourcePDF("Wydawnictwa", publisherService.getAllPublishers()));
+            helper.addAttachment("autorzy.pdf", getResourcePDF("Autorzy", authorService.getAll()));
+            helper.addAttachment("książki.pdf", getResourcePDF("Książki", bookService.getAll()));
+            helper.addAttachment("kategorie.pdf", getResourcePDF("Kategorie", categoryService.getAll()));
+            helper.addAttachment("wydawnictwa.pdf", getResourcePDF("Wydawnictwa", publisherService.getAll()));
             javaMailSender.send(message);
             return true;
         } catch (Exception e) {

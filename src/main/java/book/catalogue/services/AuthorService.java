@@ -1,6 +1,5 @@
 package book.catalogue.services;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -16,25 +15,14 @@ import book.catalogue.database.Book;
 import book.catalogue.repositories.AuthorRepository;
 
 @Service
-public class AuthorService {
+public class AuthorService extends GenericService<Author> {
+
+    private final AuthorRepository authorRepository;
 
     @Autowired
-    private AuthorRepository authorRepository;
-
-    public List<Author> getAllAuthors() {
-        List<Author> authors = new ArrayList<>();
-        authorRepository.findAll().forEach(authors::add);
-        return authors;
-    }
-
-    public List<Object[]> getAllAuthorsRecords() {
-        List<Object[]> records = new ArrayList<>();
-        authorRepository.findAll().forEach(a -> records.add(new Object[]{a.getFirstName(), a.getLastName()}));
-        return records;
-    }
-
-    public Author getAuthor(Long id) {
-        return authorRepository.findOne(id);
+    public AuthorService(AuthorRepository authorRepository) {
+        super(authorRepository);
+        this.authorRepository = authorRepository;
     }
 
     public List<Book> getAllBooksOfAuthor(Long id) {
@@ -43,30 +31,27 @@ public class AuthorService {
                 .map(AuthorBook::getBook).collect(Collectors.toList());
     }
 
-    public void addAuthor(Author author) {
-        authorRepository.save(author);
-    }
-
-    public void addAuthors(List<String[]> records) {
+    @Override
+    public void addAllRecords(List<String[]> records) {
         authorRepository.save(records.stream()
                 .filter(array -> array.length == 2)
                 .map(array -> new Author(array[0], array[1])).collect(Collectors.toList())
         );
     }
 
-    public void updateAuthor(Author author, Long id) {
+    @Override
+    void setId(Author author, Long id) {
         author.setId(id);
-        authorRepository.save(author);
     }
 
-    public void deleteAuthor(Long id) {
-        authorRepository.delete(id);
+    @Override
+    Object[] toArray(Author author) {
+        return new Object[]{author.getFirstName(), author.getLastName()};
     }
 
-    public void deleteAllWithoutBooks() {
-        authorRepository.delete(getAllAuthors().stream()
-                .filter(author -> nullOrEmpty(author.getAuthorBooks()))
-                .collect(Collectors.toList()));
+    @Override
+    boolean canBeDeleted(Author author) {
+        return nullOrEmpty(author.getAuthorBooks());
     }
 
     private boolean nullOrEmpty(List<?> list) {
