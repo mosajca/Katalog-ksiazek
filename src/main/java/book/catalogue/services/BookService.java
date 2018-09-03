@@ -19,6 +19,7 @@ import book.catalogue.repositories.BookRepository;
 import book.catalogue.repositories.CategoryRepository;
 import book.catalogue.repositories.PublisherRepository;
 import book.catalogue.utils.CSV;
+import book.catalogue.utils.Utils;
 
 @Service
 public class BookService extends GenericService<Book> {
@@ -72,7 +73,7 @@ public class BookService extends GenericService<Book> {
     }
 
     private Book arrayToBook(String[] array) {
-        Book book = new Book(array[0], parseShort(array[2]), array[5]);
+        Book book = new Book(array[0], Utils.parseShort(array[2]), array[5]);
         if (!array[4].isEmpty()) {
             book.setCategory(categoryRepository.findFirstByName(array[4])
                     .orElseGet(() -> categoryRepository.save(new Category(array[4]))));
@@ -89,29 +90,17 @@ public class BookService extends GenericService<Book> {
         List<AuthorBook> list = new ArrayList<>();
         for (String[] array : authors) {
             AuthorBook ab = new AuthorBook();
-            ab.setAuthorId(authorRepository.findFirstByFirstNameAndLastName(nullIfEmpty(array[0]), array[1])
+            ab.setAuthorId(authorRepository
+                    .findFirstByFirstNameAndLastName(Utils.getOrDefaultIfEmpty(array[0], null), array[1])
                     .map(Author::getId).orElseGet(() -> authorRepository.save(new Author(array[0], array[1])).getId()));
             list.add(ab);
         }
         return list;
     }
 
-    private Short parseShort(String string) {
-        try {
-            return Short.parseShort(string);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
     @Override
     public void addAllRecords(List<String[]> records) {
         records.stream().filter(array -> array.length == 6).map(this::arrayToBook).forEach(this::add);
-    }
-
-    @Override
-    void setId(Book book, Long id) {
-        book.setId(id);
     }
 
     @Override
@@ -126,10 +115,6 @@ public class BookService extends GenericService<Book> {
     @Override
     boolean canBeDeleted(Book book) {
         return true;
-    }
-
-    private String nullIfEmpty(String string) {
-        return (string != null && string.isEmpty()) ? null : string;
     }
 
 }

@@ -1,14 +1,17 @@
 package book.catalogue.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import book.catalogue.database.Book;
 import book.catalogue.database.Category;
 import book.catalogue.repositories.CategoryRepository;
+import book.catalogue.utils.Utils;
 
 @Service
 public class CategoryService extends GenericService<Category> {
@@ -21,6 +24,10 @@ public class CategoryService extends GenericService<Category> {
         this.categoryRepository = categoryRepository;
     }
 
+    public List<Book> getAllBooksOfCategory(Long id) {
+        return Optional.ofNullable(get(id)).map(Category::getBooks).orElse(null);
+    }
+
     @Override
     public void addAllRecords(List<String[]> records) {
         Set<String> names = getAll().stream().map(Category::getName).collect(Collectors.toSet());
@@ -31,22 +38,13 @@ public class CategoryService extends GenericService<Category> {
     }
 
     @Override
-    void setId(Category category, Long id) {
-        category.setId(id);
-    }
-
-    @Override
     Object[] toArray(Category category) {
         return new Object[]{category.getName()};
     }
 
     @Override
     boolean canBeDeleted(Category category) {
-        return nullOrEmpty(category.getBooks());
-    }
-
-    private boolean nullOrEmpty(List<?> list) {
-        return list == null || list.isEmpty();
+        return Utils.nullOrEmpty(category.getBooks());
     }
 
 }

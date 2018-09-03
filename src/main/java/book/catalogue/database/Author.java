@@ -11,8 +11,10 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import book.catalogue.utils.Utils;
+
 @Entity
-public class Author {
+public class Author implements IdInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,14 +33,16 @@ public class Author {
     }
 
     public Author(String firstName, String lastName) {
-        this.firstName = changeIfEmpty(firstName, null);
-        this.lastName = changeIfEmpty(lastName, "<puste>");
+        this.firstName = Utils.getOrDefaultIfEmpty(firstName, null);
+        this.lastName = Utils.getOrDefaultIfEmpty(lastName, "<puste>");
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -48,7 +52,7 @@ public class Author {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = changeIfEmpty(firstName, null);
+        this.firstName = Utils.getOrDefaultIfEmpty(firstName, null);
     }
 
     public String getLastName() {
@@ -56,7 +60,7 @@ public class Author {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = changeIfEmpty(lastName, "<puste>");
+        this.lastName = Utils.getOrDefaultIfEmpty(lastName, "<puste>");
     }
 
     public List<AuthorBook> getAuthorBooks() {
@@ -70,10 +74,6 @@ public class Author {
     @Override
     public String toString() {
         return id + ". " + (firstName == null ? "" : firstName + ' ') + lastName;
-    }
-
-    private String changeIfEmpty(String name, String string) {
-        return (name != null && name.isEmpty()) ? string : name;
     }
 
 }

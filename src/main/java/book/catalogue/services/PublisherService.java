@@ -1,14 +1,17 @@
 package book.catalogue.services;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import book.catalogue.database.Book;
 import book.catalogue.database.Publisher;
 import book.catalogue.repositories.PublisherRepository;
+import book.catalogue.utils.Utils;
 
 @Service
 public class PublisherService extends GenericService<Publisher> {
@@ -21,6 +24,10 @@ public class PublisherService extends GenericService<Publisher> {
         this.publisherRepository = publisherRepository;
     }
 
+    public List<Book> getAllBooksOfPublisher(Long id) {
+        return Optional.ofNullable(get(id)).map(Publisher::getBooks).orElse(null);
+    }
+
     @Override
     public void addAllRecords(List<String[]> records) {
         Set<String> names = getAll().stream().map(Publisher::getName).collect(Collectors.toSet());
@@ -31,22 +38,13 @@ public class PublisherService extends GenericService<Publisher> {
     }
 
     @Override
-    void setId(Publisher publisher, Long id) {
-        publisher.setId(id);
-    }
-
-    @Override
     Object[] toArray(Publisher publisher) {
         return new Object[]{publisher.getName()};
     }
 
     @Override
     boolean canBeDeleted(Publisher publisher) {
-        return nullOrEmpty(publisher.getBooks());
-    }
-
-    private boolean nullOrEmpty(List<?> list) {
-        return list == null || list.isEmpty();
+        return Utils.nullOrEmpty(publisher.getBooks());
     }
 
 }

@@ -16,11 +16,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import book.catalogue.database.IdInterface;
 import book.catalogue.services.GenericService;
 import book.catalogue.utils.CSV;
 import book.catalogue.utils.PDF;
 
-public abstract class GenericController<T> {
+public abstract class GenericController<T extends IdInterface> {
 
     private GenericService<T> genericService;
     private String name;

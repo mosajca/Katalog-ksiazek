@@ -1,7 +1,6 @@
 package book.catalogue.controllers;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +26,7 @@ public class PublisherController extends GenericController<Publisher> {
 
     @GetMapping("{id}/books")
     public List<Book> getAllBooks(@PathVariable Long id) {
-        return Optional.ofNullable(publisherService.get(id)).map(Publisher::getBooks).orElse(null);
+        return publisherService.getAllBooksOfPublisher(id);
     }
 
 }

@@ -13,6 +13,7 @@ import book.catalogue.database.Author;
 import book.catalogue.database.AuthorBook;
 import book.catalogue.database.Book;
 import book.catalogue.repositories.AuthorRepository;
+import book.catalogue.utils.Utils;
 
 @Service
 public class AuthorService extends GenericService<Author> {
@@ -40,22 +41,13 @@ public class AuthorService extends GenericService<Author> {
     }
 
     @Override
-    void setId(Author author, Long id) {
-        author.setId(id);
-    }
-
-    @Override
     Object[] toArray(Author author) {
         return new Object[]{author.getFirstName(), author.getLastName()};
     }
 
     @Override
     boolean canBeDeleted(Author author) {
-        return nullOrEmpty(author.getAuthorBooks());
-    }
-
-    private boolean nullOrEmpty(List<?> list) {
-        return list == null || list.isEmpty();
+        return Utils.nullOrEmpty(author.getAuthorBooks());
     }
 
 }

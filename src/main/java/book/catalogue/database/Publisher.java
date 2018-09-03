@@ -11,8 +11,10 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import book.catalogue.utils.Utils;
+
 @Entity
-public class Publisher {
+public class Publisher implements IdInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,13 +31,15 @@ public class Publisher {
     }
 
     public Publisher(String name) {
-        this.name = changeNameIfEmpty(name);
+        this.name = Utils.getOrDefaultIfEmpty(name, "<puste>");
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -45,7 +49,7 @@ public class Publisher {
     }
 
     public void setName(String name) {
-        this.name = changeNameIfEmpty(name);
+        this.name = Utils.getOrDefaultIfEmpty(name, "<puste>");
     }
 
     public List<Book> getBooks() {
@@ -59,10 +63,6 @@ public class Publisher {
     @Override
     public String toString() {
         return id + ". " + name;
-    }
-
-    private String changeNameIfEmpty(String name) {
-        return (name != null && name.isEmpty()) ? "<puste>" : name;
     }
 
 }

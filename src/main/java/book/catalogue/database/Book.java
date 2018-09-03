@@ -16,8 +16,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
+import book.catalogue.utils.Utils;
+
 @Entity
-public class Book {
+public class Book implements IdInterface {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,15 +47,17 @@ public class Book {
     }
 
     public Book(String title, Short year, String description) {
-        this.title = changeIfEmpty(title, "<puste>");
+        this.title = Utils.getOrDefaultIfEmpty(title, "<puste>");
         this.year = year;
-        this.description = changeIfEmpty(description, null);
+        this.description = Utils.getOrDefaultIfEmpty(description, null);
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public void setId(Long id) {
         this.id = id;
     }
@@ -63,7 +67,7 @@ public class Book {
     }
 
     public void setTitle(String title) {
-        this.title = changeIfEmpty(title, "<puste>");
+        this.title = Utils.getOrDefaultIfEmpty(title, "<puste>");
     }
 
     public Short getYear() {
@@ -79,7 +83,7 @@ public class Book {
     }
 
     public void setDescription(String description) {
-        this.description = changeIfEmpty(description, null);
+        this.description = Utils.getOrDefaultIfEmpty(description, null);
     }
 
     public Category getCategory() {
@@ -128,10 +132,6 @@ public class Book {
 
     private String format(String first, String second) {
         return first.toUpperCase() + ": " + second + ", ";
-    }
-
-    private String changeIfEmpty(String name, String string) {
-        return (name != null && name.isEmpty()) ? string : name;
     }
 
 }

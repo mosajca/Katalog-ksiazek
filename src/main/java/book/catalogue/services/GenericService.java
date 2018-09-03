@@ -6,7 +6,9 @@ import java.util.stream.Collectors;
 
 import org.springframework.data.repository.CrudRepository;
 
-public abstract class GenericService<T> {
+import book.catalogue.database.IdInterface;
+
+public abstract class GenericService<T extends IdInterface> {
 
     private CrudRepository<T, Long> crudRepository;
 
@@ -33,7 +35,7 @@ public abstract class GenericService<T> {
     }
 
     public void update(T t, Long id) {
-        setId(t, id);
+        t.setId(id);
         crudRepository.save(t);
     }
 
@@ -46,8 +48,6 @@ public abstract class GenericService<T> {
     }
 
     public abstract void addAllRecords(List<String[]> records);
-
-    abstract void setId(T t, Long id);
 
     abstract Object[] toArray(T t);
 
