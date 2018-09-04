@@ -27,7 +27,7 @@ public class EmailController {
     public ResponseEntity<?> sendEmail(@RequestBody String json) {
         boolean ok;
         try {
-            ok = emailService.sendPDF(new ObjectMapper().readTree(json).path("email").asText(""));
+            ok = emailService.sendEmail(new ObjectMapper().readTree(json).path("email").asText(""));
         } catch (IOException e) {
             ok = false;
         }

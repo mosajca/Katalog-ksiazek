@@ -13,7 +13,7 @@
     const getCategoryPublisherValues = generateGetValuesFunction('id', 'name');
 
     setOnLoadHiddenIframe();
-    setOnClickSendPdf();
+    setOnClickSendEmail();
     setOnClickGET('#authors-button', '/authors', authorHeaderRowValues, getAuthorValues);
     setOnClickGET('#books-button', '/books', bookHeaderRowValues, getBookValues);
     setOnClickGET('#categories-button', '/categories', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
@@ -45,8 +45,8 @@
         });
     }
 
-    function setOnClickSendPdf() {
-        $('#send-pdf').on('click', function () {
+    function setOnClickSendEmail() {
+        $('#send-email').on('click', function () {
             $.ajax({
                 url: '/email', type: 'post', contentType: 'application/json',
                 data: JSON.stringify({email: emailInput.value})
