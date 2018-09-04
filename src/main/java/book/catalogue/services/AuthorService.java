@@ -1,10 +1,8 @@
 package book.catalogue.services;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,9 +25,8 @@ public class AuthorService extends GenericService<Author> {
     }
 
     public List<Book> getAllBooksOfAuthor(Long id) {
-        return Optional.ofNullable(authorRepository.findOne(id)).map(Author::getAuthorBooks)
-                .map(Collection::stream).orElseGet(Stream::empty)
-                .map(AuthorBook::getBook).collect(Collectors.toList());
+        return Optional.ofNullable(get(id)).map(Author::getAuthorBooks)
+                .map(list -> list.stream().map(AuthorBook::getBook).collect(Collectors.toList())).orElse(null);
     }
 
     @Override

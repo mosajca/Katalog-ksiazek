@@ -1,8 +1,10 @@
 package book.catalogue.database;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class AuthorBookPK implements Serializable {
+
     private static final long serialVersionUID = 1L;
     private Long authorId;
     private Long bookId;
@@ -27,34 +29,16 @@ public class AuthorBookPK implements Serializable {
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((authorId == null) ? 0 : authorId.hashCode());
-        result = prime * result + ((bookId == null) ? 0 : bookId.hashCode());
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AuthorBookPK that = (AuthorBookPK) o;
+        return Objects.equals(authorId, that.authorId) && Objects.equals(bookId, that.bookId);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        AuthorBookPK other = (AuthorBookPK) obj;
-        if (authorId == null) {
-            if (other.authorId != null)
-                return false;
-        } else if (!authorId.equals(other.authorId))
-            return false;
-        if (bookId == null) {
-            if (other.bookId != null)
-                return false;
-        } else if (!bookId.equals(other.bookId))
-            return false;
-        return true;
+    public int hashCode() {
+        return Objects.hash(authorId, bookId);
     }
 
 }
