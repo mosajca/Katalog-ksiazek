@@ -92,7 +92,40 @@
     }
 
     function addHeaderRow(values) {
-        tableThead.appendChild(createRow('th', values));
+        const tr = createRow('th', values);
+        const childNodes = tr.childNodes;
+        const len = childNodes.length;
+        for (let i = 0; i < len; ++i) {
+            childNodes[i].addEventListener('click', generateSortTableFunction(i, (i === 0 || i === 3)));
+        }
+        tableThead.appendChild(tr);
+    }
+
+    function generateSortTableFunction(columnIndex, numbers) {
+        let desc = false;
+        let compareFunction;
+        if (numbers) {
+            compareFunction = (a, b) => Number(a.value) - Number(b.value);
+        } else {
+            compareFunction = (a, b) => (a.value < b.value) ? -1 : ((a.value > b.value) ? 1 : 0);
+        }
+
+        return function () {
+            const rows = Array.from(tableTbody.rows);
+            const len = rows.length;
+            const array = [];
+            for (let i = 0; i < len; ++i) {
+                array.push({index: i, value: rows[i].childNodes[columnIndex].innerText});
+            }
+            array.sort(compareFunction);
+            if (desc) {
+                array.reverse();
+            }
+            desc = !desc;
+            for (let i = 0; i < len; ++i) {
+                tableTbody.appendChild(rows[array[i].index]);
+            }
+        }
     }
 
     function addBodyRow(values) {
