@@ -51,7 +51,7 @@
                 url: '/email', type: 'post', contentType: 'application/json',
                 data: JSON.stringify({email: emailInput.value})
             }).done(function () {
-                alert('OK.');
+                alert('E-mail został wysłany.');
             }).fail(function () {
                 alert('Wystąpił błąd.');
             });
@@ -109,7 +109,6 @@
         } else {
             compareFunction = (a, b) => (a.value < b.value) ? -1 : ((a.value > b.value) ? 1 : 0);
         }
-
         return function () {
             const rows = Array.from(tableTbody.rows);
             const len = rows.length;
@@ -142,7 +141,7 @@
             addButtonDelete(url);
             $.ajax({url: url, dataType: 'json', type: 'get'}).done(function (object) {
                 addBodyRow(getValues(object));
-            })
+            });
         }));
         tableTbody.lastChild.appendChild(td);
     }
@@ -156,19 +155,19 @@
                 for (const object of array) {
                     addBodyRow(getBookValues(object));
                 }
-            })
+            });
         }));
     }
 
     function addButtonDelete(url) {
         buttonDiv.appendChild(createButton('Usuń', function () {
-            $.ajax({url: url, type: 'delete'})
-                .done(function () {
+            if (confirm('Czy na pewno usunąć?')) {
+                $.ajax({url: url, type: 'delete'}).done(function () {
                     clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
-                })
-                .fail(function () {
+                }).fail(function () {
                     alert('Wystąpił błąd.');
-                })
+                });
+            }
         }));
     }
 
@@ -300,26 +299,20 @@
     }
 
     function getAndAddOptions(authorSelect, publisherSelect, categorySelect, func) {
-        $.ajax({url: '/authors', dataType: 'json', type: 'get'})
-            .done(function (array) {
-                addOptionsToSelect(authorSelect, array.map(function (x) {
-                    const innerText = (x.firstName ? x.firstName + ' ' : '') + x.lastName;
-                    return {innerText: innerText, value: x.id};
-                }));
-            })
-            .always(function () {
-                $.ajax({url: '/publishers', dataType: 'json', type: 'get'})
-                    .done(function (array) {
-                        addOptionsToSelect(publisherSelect, array.map(x => ({innerText: x.name, value: x.id})));
-                    })
-                    .always(function () {
-                        $.ajax({url: '/categories', dataType: 'json', type: 'get'})
-                            .done(function (array) {
-                                addOptionsToSelect(categorySelect, array.map(x => ({innerText: x.name, value: x.id})));
-                            })
-                            .always(func);
-                    });
+        $.ajax({url: '/authors', dataType: 'json', type: 'get'}).done(function (array) {
+            addOptionsToSelect(authorSelect, array.map(function (x) {
+                const innerText = (x.firstName ? x.firstName + ' ' : '') + x.lastName;
+                return {innerText: innerText, value: x.id};
+            }));
+        }).always(function () {
+            $.ajax({url: '/publishers', dataType: 'json', type: 'get'}).done(function (array) {
+                addOptionsToSelect(publisherSelect, array.map(x => ({innerText: x.name, value: x.id})));
+            }).always(function () {
+                $.ajax({url: '/categories', dataType: 'json', type: 'get'}).done(function (array) {
+                    addOptionsToSelect(categorySelect, array.map(x => ({innerText: x.name, value: x.id})));
+                }).always(func);
             });
+        });
     }
 
     function sendAndGetData(url, type, data, getValues) {
