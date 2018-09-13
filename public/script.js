@@ -14,13 +14,13 @@
 
     setOnLoadHiddenIframe();
     setOnClickSendEmail();
-    setOnClickGET('#authors-button', '/authors', authorHeaderRowValues, getAuthorValues);
-    setOnClickGET('#books-button', '/books', bookHeaderRowValues, getBookValues);
-    setOnClickGET('#categories-button', '/categories', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
-    setOnClickGET('#publishers-button', '/publishers', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
+    setOnClickGET('authors-button', '/authors', authorHeaderRowValues, getAuthorValues);
+    setOnClickGET('books-button', '/books', bookHeaderRowValues, getBookValues);
+    setOnClickGET('categories-button', '/categories', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
+    setOnClickGET('publishers-button', '/publishers', categoryPublisherHeaderRowValues, getCategoryPublisherValues);
 
     function setOnClickGET(buttonId, url, headerValues, getValues) {
-        $(buttonId).on('click', function () {
+        document.getElementById(buttonId).addEventListener('click', function () {
             clear(linkDiv, tableThead, tableTbody, buttonDiv, mainForm);
             addSpan(this.innerText);
             addLink(url + '/pdf', 'pdf');
@@ -40,13 +40,13 @@
     }
 
     function setOnLoadHiddenIframe() {
-        $('#hidden-iframe').on('load', function () {
+        document.getElementById('hidden-iframe').addEventListener('load', function () {
             window.location.replace('/');
         });
     }
 
     function setOnClickSendEmail() {
-        $('#send-email').on('click', function () {
+        document.getElementById('send-email').addEventListener('click', function () {
             $.ajax({
                 url: '/email', type: 'post', contentType: 'application/json',
                 data: JSON.stringify({email: emailInput.value})
